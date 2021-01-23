@@ -41,7 +41,7 @@ public class CertificateDaoImpl implements CertificateDao {
 
 
     @Override
-    public List<Certificate> allCertificates() {
+    public List<Certificate> getAll() {
         return jdbcTemplate.query(GET_ALL_CERTIFICATES, (rs, rowNum) -> dbExpression(rs));
 
     }

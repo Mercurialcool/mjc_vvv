@@ -25,7 +25,7 @@ public class GiftCertificateController {
     @RequestMapping(path = "/getAll", method = RequestMethod.GET)
     public List<Certificate> getAll() throws DaoException {
         try {
-            return certificateService.allCertificates();
+            return certificateService.getAll();
         } catch (CertificateServiceException e) {
             throw new DaoException(e);
         }
@@ -41,8 +41,12 @@ public class GiftCertificateController {
     }
 
     @RequestMapping(path = "/removeCertificate", method = RequestMethod.DELETE)
-    public boolean removeCertificate(@RequestBody Certificate certificate) throws CertificateServiceException {
-        return certificateService.delete(certificate);
+    public boolean removeCertificate(@RequestBody Certificate certificate) throws DaoException {
+        try {
+            return certificateService.delete(certificate);
+        } catch (CertificateServiceException e) {
+            throw new DaoException(e);
+        }
     }
 
     @RequestMapping(path = "/getCertificateByTag", method = RequestMethod.GET)

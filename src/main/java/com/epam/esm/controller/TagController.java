@@ -5,7 +5,6 @@ import com.epam.esm.model.Tag;
 import com.epam.esm.service.CertificateServiceException;
 import com.epam.esm.service.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,7 +23,7 @@ public class TagController {
     @RequestMapping(path = "/findAll", method = RequestMethod.GET)
     public List<Tag> findAll() throws DaoException {
         try {
-            return tagService.findAll();
+            return tagService.getAll();
         } catch (CertificateServiceException e) {
             throw new DaoException(e);
         }
@@ -34,16 +33,16 @@ public class TagController {
     public Tag add(@RequestBody @Validated Tag tag) throws DaoException {
         try {
             return tagService.add(tag);
-        } catch (DataAccessException e) {
+        } catch (CertificateServiceException e) {
             throw new DaoException(e);
         }
     }
 
     @RequestMapping(path = "/removeTag", method = RequestMethod.DELETE)
-    public boolean delete(@RequestBody Tag tag) throws CertificateServiceException, DaoException {
+    public boolean delete(@RequestBody Tag tag) throws DaoException {
         try {
             return tagService.delete(tag);
-        } catch (DataAccessException e) {
+        } catch (CertificateServiceException e) {
             throw new DaoException(e);
         }
     }

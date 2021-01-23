@@ -16,4 +16,5 @@ public class SqlProvider {
     public static final String GET_ALL_TAGS = "SELECT * FROM tag";
     public static final String ADD_NEW_TAG = "INSERT INTO tag values(?,?)";
     public static final String GET_TAG_BY_ID = "SELECT * FROM tag WHERE id = ?";
+    public static final String EDIT_TAG = "UPDATE tag SET name = ? WHERE id = ?";
 }

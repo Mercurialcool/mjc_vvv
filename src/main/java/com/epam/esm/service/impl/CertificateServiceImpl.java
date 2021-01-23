@@ -8,6 +8,7 @@ import com.epam.esm.model.Tag;
 import com.epam.esm.service.CertificateService;
 import com.epam.esm.service.CertificateServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 
@@ -25,16 +26,16 @@ public class CertificateServiceImpl implements CertificateService {
     }
 
     @Override
-    public List<Certificate> allCertificates() throws CertificateServiceException {
+    public List<Certificate> getAll() throws CertificateServiceException {
         try {
-            return certificateDao.allCertificates();
+            return certificateDao.getAll();
         } catch (DaoException e) {
            throw new CertificateServiceException(e);
         }
     }
 
     @Override
-    public Certificate add(Certificate certificate) throws CertificateServiceException{
+    public Certificate add(Certificate certificate) throws CertificateServiceException, DaoException {
         try {
             if(certificateDao.getByName(certificate.getName())!= null){
                 throw new CertificateServiceException();
@@ -44,8 +45,12 @@ public class CertificateServiceImpl implements CertificateService {
         }
         if (certificate.getTags()!=null){
             for (Tag tag: certificate.getTags()){
-                if (tagDao.getByName(tag.getName())==null){
-                    tagDao.add(tag);
+                try {
+                    if (tagDao.getByName(tag.getName())==null){
+                        tagDao.add(tag);
+                    }
+                } catch (DataAccessException e) {
+                    throw new DaoException(e);
                 }
             }
         }

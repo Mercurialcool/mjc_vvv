@@ -1,7 +1,9 @@
 package com.epam.esm.dao.impl;
 
+import com.epam.esm.dao.DaoException;
 import com.epam.esm.dao.TagDao;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -21,7 +23,7 @@ public class TagDaoImpl implements TagDao {
     private JdbcTemplate jdbcTemplate;
 
     @Override
-    public List<Tag> findAll() {
+    public List<Tag> getAll() {
         return jdbcTemplate.query(GET_ALL_TAGS, (rs, rowNum) -> {
             Tag tag = new Tag();
             tag.setId(rs.getInt(1));
@@ -43,6 +45,17 @@ public class TagDaoImpl implements TagDao {
     @Override
     public void delete(Tag tag) {
         jdbcTemplate.update(REMOVE_CERTIFICATE, tag.getId());
+    }
+
+    @Override
+    public void edit(Tag tag) throws DaoException {
+        try {
+            jdbcTemplate.update(EDIT_TAG,
+                    tag.getId(),
+                    tag.getName());
+        } catch (DataAccessException e) {
+            throw new DaoException(e);
+        }
     }
 
     @Override

@@ -1,11 +1,8 @@
 package com.epam.esm.service.impl;
 
-import com.epam.esm.dao.CertificateDao;
 import com.epam.esm.dao.DaoException;
 import com.epam.esm.dao.TagDao;
-import com.epam.esm.model.Certificate;
 import com.epam.esm.model.Tag;
-import com.epam.esm.service.CertificateServiceException;
 import com.epam.esm.service.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -23,9 +20,9 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public List<Tag> findAll() throws DaoException {
+    public List<Tag> getAll() throws DaoException {
         try {
-            return tagDao.findAll();
+            return tagDao.getAll();
         } catch (DataAccessException e) {
             throw new DaoException(e);
         }
@@ -50,7 +47,11 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public Tag getByName(String name) {
-        return tagDao.getByName(name);
+    public Tag getByName(String name) throws DaoException {
+        try {
+            return tagDao.getByName(name);
+        } catch (DaoException e) {
+            throw new DaoException(e);
+        }
     }
 }
