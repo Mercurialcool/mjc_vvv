@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
-import java.time.Instant;
 import java.util.Set;
 
 public class Certificate implements Serializable {

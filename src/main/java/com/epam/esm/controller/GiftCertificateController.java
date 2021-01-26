@@ -13,16 +13,16 @@ import java.util.List;
 
 
 @RestController
-@RequestMapping("/app")
+@RequestMapping("/certificate")
 public class GiftCertificateController {
     private CertificateService certificateService;
 
     @Autowired
-    public void setCertificateService(CertificateService certificateService) {
+    public void GiftCertificateController(CertificateService certificateService) {
         this.certificateService = certificateService;
     }
 
-    @RequestMapping(path = "/getAll", method = RequestMethod.GET)
+    @RequestMapping(method = RequestMethod.GET)
     public List<Certificate> getAll() throws DaoException {
         try {
             return certificateService.getAll();
@@ -31,7 +31,7 @@ public class GiftCertificateController {
         }
     }
 
-    @RequestMapping(path = "/addNewCertificate", method = RequestMethod.POST)
+    @RequestMapping(path = "/add", method = RequestMethod.POST)
     public Certificate create(@RequestBody @Validated Certificate certificate) throws DaoException {
         try {
             return certificateService.add(certificate);
@@ -40,10 +40,19 @@ public class GiftCertificateController {
         }
     }
 
-    @RequestMapping(path = "/removeCertificate", method = RequestMethod.DELETE)
+    @RequestMapping(method = RequestMethod.DELETE)
     public boolean removeCertificate(@RequestBody Certificate certificate) throws DaoException {
         try {
             return certificateService.delete(certificate);
+        } catch (CertificateServiceException e) {
+            throw new DaoException(e);
+        }
+    }
+
+    @RequestMapping(path = "/update", method = RequestMethod.POST)
+    public void updateCertificate(@RequestBody Certificate certificate) throws DaoException {
+        try {
+            certificateService.update(certificate);
         } catch (CertificateServiceException e) {
             throw new DaoException(e);
         }

@@ -14,13 +14,13 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/appTag")
+@RequestMapping("/tag")
 public class TagController {
 
     @Autowired
     private TagService tagService;
 
-    @RequestMapping(path = "/findAll", method = RequestMethod.GET)
+    @RequestMapping(method = RequestMethod.GET)
     public List<Tag> findAll() throws DaoException {
         try {
             return tagService.getAll();
@@ -29,7 +29,7 @@ public class TagController {
         }
     }
 
-    @RequestMapping(path = "/addNewTag", method = RequestMethod.POST)
+    @RequestMapping(method = RequestMethod.POST)
     public Tag add(@RequestBody @Validated Tag tag) throws DaoException {
         try {
             return tagService.add(tag);
@@ -38,7 +38,7 @@ public class TagController {
         }
     }
 
-    @RequestMapping(path = "/removeTag", method = RequestMethod.DELETE)
+    @RequestMapping(method = RequestMethod.DELETE)
     public boolean delete(@RequestBody Tag tag) throws DaoException {
         try {
             return tagService.delete(tag);

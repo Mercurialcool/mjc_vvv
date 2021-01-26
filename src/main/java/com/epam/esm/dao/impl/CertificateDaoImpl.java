@@ -15,13 +15,11 @@ import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
-
 import org.springframework.transaction.annotation.Transactional;
-
-
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -97,15 +95,36 @@ public class CertificateDaoImpl implements CertificateDao {
     @Transactional
     @Override
     public void edit(Certificate certificate) throws DaoException {
+        List<Object> params = new ArrayList<>();
+        List<String> names = new ArrayList<>();
+        if(certificate.getName()!=null) {
+            names.add(NAME);
+            params.add(certificate.getName());
+        }
+        if(certificate.getName()!=null) {
+            names.add(DESCRIPTION);
+            params.add(certificate.getDescription());
+        }
+        if(certificate.getName()!=null) {
+            names.add(PRICE);
+            params.add(certificate.getPrice());
+        }
+        if(certificate.getName()!=null) {
+            names.add(DURATION);
+            params.add(certificate.getDuration());
+        }
+        if(certificate.getName()!=null) {
+            names.add(CREATE_DATE);
+            params.add(certificate.getCreateDate());
+        }
+        if(certificate.getName()!=null) {
+            names.add(LAST_UPDATE_DATE);
+            params.add(certificate.getLastUpdateDate());
+        }
+        String sql = "UPDATE gift_certificate SET " + String.join(",", names) + " WHERE id = ?";
+        params.add(certificate.getId());
         try {
-            jdbcTemplate.update(EDIT_CERTIFICATE,
-                    certificate.getName(),
-                    certificate.getDescription(),
-                    certificate.getPrice(),
-                    certificate.getDuration(),
-                    certificate.getCreateDate(),
-                    certificate.getLastUpdateDate(),
-                    certificate.getId());
+            jdbcTemplate.update(sql, params.toArray());
         } catch (DataAccessException e) {
             throw new DaoException(e);
         }
