@@ -90,20 +90,11 @@ public class CertificateServiceImpl implements CertificateService {
     }
 
     @Override
-    public List<Certificate> searchCertificateByDescription(String description)throws CertificateServiceException{
+    public List<Certificate> search(String template) throws CertificateServiceException {
         try {
-            return certificateDao.searchCertificateByDescription(description);
+            return certificateDao.search(template);
         } catch (DaoException e) {
             throw new CertificateServiceException(e);
-        }
-    }
-
-    @Override
-    public List<Certificate> searchCertificateByName(String name) throws CertificateServiceException{
-        try {
-            return certificateDao.searchCertificateByName(name);
-        } catch (DaoException e) {
-           throw new CertificateServiceException(e);
         }
     }
 

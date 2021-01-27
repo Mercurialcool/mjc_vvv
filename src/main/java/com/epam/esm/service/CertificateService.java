@@ -8,7 +8,5 @@ import java.util.List;
 public interface CertificateService extends CrudService<Certificate> {
     void update(Certificate certificate) throws  CertificateServiceException;
     List<Certificate> getCertificateByTag(Tag tag) throws  CertificateServiceException;
-    List<Certificate> searchCertificateByDescription(String description) throws  CertificateServiceException;
-    List<Certificate> searchCertificateByName(String name) throws  CertificateServiceException;
-
+    List<Certificate> search(String template) throws CertificateServiceException;
 }

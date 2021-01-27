@@ -10,7 +10,7 @@ public class SqlProvider {
     public static final String GET_CERTIFICATES_BY_TAG_ID = "SELECT gift_certificate_id FROM tag_has_gift_certificate WHERE tag_id = ?";
     public static final String GET_CERTIFICATE_BY_DESCRIPTION = "SELECT * FROM gift_certificate WHERE description LIKE '%'?'%'";
     public static final String GET_CERTIFICATE_BY_NAME = "SELECT * FROM gift_certificate WHERE name LIKE '%'?'%'";
-
+    public static final String SEARCH_QUERY = "(SELECT * FROM gift_certificate WHERE description LIKE '%'?'%') UNION (SELECT * FROM gift_certificate WHERE name LIKE '%'?'%')";
 
     public static final String GET_ALL_TAGS = "SELECT * FROM tag";
     public static final String ADD_NEW_TAG = "INSERT INTO tag values(?,?)";

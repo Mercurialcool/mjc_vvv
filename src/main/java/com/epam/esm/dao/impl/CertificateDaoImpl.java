@@ -6,6 +6,7 @@ import com.epam.esm.dao.CertificateDao;
 import com.epam.esm.dao.DaoException;
 import com.epam.esm.model.Certificate;
 import com.epam.esm.model.Tag;
+import com.epam.esm.service.CertificateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -28,9 +29,12 @@ import static com.epam.esm.dao.SqlProvider.*;
 @Repository
 @Transactional(readOnly = true)
 public class CertificateDaoImpl implements CertificateDao {
+    private JdbcTemplate jdbcTemplate;
 
     @Autowired
-    private JdbcTemplate jdbcTemplate;
+    public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
 
     private List<Integer> getCertificateIdsByTagId(Integer tagId){
         return jdbcTemplate.query(GET_CERTIFICATES_BY_TAG_ID, new Object[] {tagId},
@@ -149,12 +153,7 @@ public class CertificateDaoImpl implements CertificateDao {
     }
 
     @Override
-    public List<Certificate> searchCertificateByDescription(String description) throws DaoException {
-        return jdbcTemplate.query(GET_CERTIFICATE_BY_DESCRIPTION, new Object[]{description}, (rs, rowNum) -> dbExpression(rs));
-    }
-
-    @Override
-    public List<Certificate> searchCertificateByName(String name) throws DaoException {
-        return jdbcTemplate.query(GET_CERTIFICATE_BY_NAME, new Object[]{name}, (rs, rowNum) -> dbExpression(rs));
+    public List<Certificate> search(String template) throws DaoException {
+        return jdbcTemplate.query(SEARCH_QUERY, new Object[]{template}, (rs, rowNum) -> dbExpression(rs));
     }
 }

@@ -8,4 +8,5 @@ public interface CrudDao<T> {
     void delete(T t) throws DaoException;
     void edit(T t) throws DaoException;
     T getByName(String name) throws DaoException;
+
 }

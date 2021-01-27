@@ -67,19 +67,10 @@ public class GiftCertificateController {
         }
     }
 
-    @RequestMapping(path = "/getCertificateByName", method = RequestMethod.GET)
-    public List<Certificate> searchCertificateByName(@RequestParam String name) throws DaoException {
+    @RequestMapping(path = "/search", method = RequestMethod.GET)
+    public List<Certificate> search (@RequestParam String template) throws DaoException {
         try {
-            return certificateService.searchCertificateByName(name);
-        } catch (CertificateServiceException e) {
-            throw new DaoException(e);
-        }
-    }
-
-    @RequestMapping(path = "/getCertificateByDescription", method = RequestMethod.GET)
-    public List<Certificate> searchCertificateByDescription(@RequestParam String description) throws DaoException {
-        try {
-            return certificateService.searchCertificateByDescription(description);
+            return certificateService.search(template);
         } catch (CertificateServiceException e) {
             throw new DaoException(e);
         }
