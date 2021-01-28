@@ -6,6 +6,7 @@ import com.epam.esm.model.Tag;
 import com.epam.esm.service.CertificateService;
 import com.epam.esm.service.CertificateServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.MultiValueMap;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,15 +24,15 @@ public class GiftCertificateController {
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    public List<Certificate> getAll() throws DaoException {
+    public List<Certificate> getByParameters(@RequestParam(required = false) MultiValueMap<String, String> params) throws DaoException {
         try {
-            return certificateService.getAll();
+            return certificateService.getByParameters(params);
         } catch (CertificateServiceException e) {
             throw new DaoException(e);
         }
     }
 
-    @RequestMapping(path = "/add", method = RequestMethod.POST)
+    @RequestMapping(method = RequestMethod.POST)
     public Certificate create(@RequestBody @Validated Certificate certificate) throws DaoException {
         try {
             return certificateService.add(certificate);
@@ -49,7 +50,7 @@ public class GiftCertificateController {
         }
     }
 
-    @RequestMapping(path = "/update", method = RequestMethod.POST)
+    @RequestMapping(method = RequestMethod.PUT)
     public void updateCertificate(@RequestBody Certificate certificate) throws DaoException {
         try {
             certificateService.update(certificate);
@@ -58,7 +59,7 @@ public class GiftCertificateController {
         }
     }
 
-    @RequestMapping(path = "/getCertificateByTag", method = RequestMethod.GET)
+    @RequestMapping(path = "/getByTag", method = RequestMethod.GET)
     public List<Certificate> getCertificateByTag(@RequestBody Tag tag) throws DaoException {
         try {
             return certificateService.getCertificateByTag(tag);
@@ -66,14 +67,4 @@ public class GiftCertificateController {
             throw new DaoException(e);
         }
     }
-
-    @RequestMapping(path = "/search", method = RequestMethod.GET)
-    public List<Certificate> search (@RequestParam String template) throws DaoException {
-        try {
-            return certificateService.search(template);
-        } catch (CertificateServiceException e) {
-            throw new DaoException(e);
-        }
-    }
-
 }

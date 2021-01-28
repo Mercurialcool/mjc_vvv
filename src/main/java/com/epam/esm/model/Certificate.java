@@ -6,17 +6,16 @@ import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Set;
 
-public class Certificate implements Serializable {
+public class Certificate extends Entity implements Serializable {
 
-   private Long id;
    private String  name;
    private String description;
-   private double price;
-   private int duration;
+   private Double price;
+   private Integer duration;
    @JsonFormat(shape = JsonFormat.Shape.STRING)
-   private Timestamp createDate;
+   private Timestamp createDate = new Timestamp(System.currentTimeMillis());
    @JsonFormat(shape = JsonFormat.Shape.STRING)
-   private Timestamp lastUpdateDate;
+   private Timestamp lastUpdateDate = new Timestamp(System.currentTimeMillis());
 
    private Set<Tag> tags;
 
@@ -29,14 +28,6 @@ public class Certificate implements Serializable {
 
    public void setTags(Set<Tag> tags) {
       this.tags = tags;
-   }
-
-   public Long getId() {
-      return id;
-   }
-
-   public void setId(Long id) {
-      this.id = id;
    }
 
    public String getName() {
@@ -55,19 +46,19 @@ public class Certificate implements Serializable {
       this.description = description;
    }
 
-   public double getPrice() {
+   public Double getPrice() {
       return price;
    }
 
-   public void setPrice(double price) {
+   public void setPrice(Double price) {
       this.price = price;
    }
 
-   public int getDuration() {
+   public Integer getDuration() {
       return duration;
    }
 
-   public void setDuration(int duration) {
+   public void setDuration(Integer duration) {
       this.duration = duration;
    }
 

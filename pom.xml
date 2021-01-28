@@ -21,6 +21,7 @@
         <spring-jdbc.version>5.2.0.RELEASE</spring-jdbc.version>
         <junit-jupiter-api.version>5.4.2</junit-jupiter-api.version>
         <junit.version>4.13-beta-3</junit.version>
+        <mockito-all.version>1.10.19</mockito-all.version>
     </properties>
 
     <dependencies>
@@ -81,7 +82,7 @@
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-all</artifactId>
-            <version>1.10.19</version>
+            <version>${mockito-all.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

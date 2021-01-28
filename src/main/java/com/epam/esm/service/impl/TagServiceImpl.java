@@ -7,6 +7,7 @@ import com.epam.esm.service.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.util.MultiValueMap;
 
 
 import java.util.List;
@@ -20,7 +21,7 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public List<Tag> getAll() throws DaoException {
+    public List<Tag> getByParameters(MultiValueMap<String, String> params) throws DaoException {
         try {
             return tagDao.getAll();
         } catch (DataAccessException e) {

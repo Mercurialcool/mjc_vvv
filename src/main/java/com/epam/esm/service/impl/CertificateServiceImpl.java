@@ -10,6 +10,8 @@ import com.epam.esm.service.CertificateServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.MultiValueMap;
 
 
 import java.util.List;
@@ -26,9 +28,11 @@ public class CertificateServiceImpl implements CertificateService {
     }
 
     @Override
-    public List<Certificate> getAll() throws CertificateServiceException {
+    public List<Certificate> getByParameters(MultiValueMap<String, String> params) throws CertificateServiceException {
         try {
-            return certificateDao.getAll();
+            if (CollectionUtils.isEmpty(params))
+                return certificateDao.getAll();
+            return certificateDao.getByParameters(params);
         } catch (DaoException e) {
            throw new CertificateServiceException(e);
         }

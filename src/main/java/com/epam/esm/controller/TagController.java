@@ -5,11 +5,9 @@ import com.epam.esm.model.Tag;
 import com.epam.esm.service.CertificateServiceException;
 import com.epam.esm.service.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.MultiValueMap;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -21,9 +19,9 @@ public class TagController {
     private TagService tagService;
 
     @RequestMapping(method = RequestMethod.GET)
-    public List<Tag> findAll() throws DaoException {
+    public List<Tag> findAll(@RequestParam(required = false) MultiValueMap<String, String> params) throws DaoException {
         try {
-            return tagService.getAll();
+            return tagService.getByParameters(params);
         } catch (CertificateServiceException e) {
             throw new DaoException(e);
         }

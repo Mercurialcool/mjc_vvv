@@ -10,6 +10,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import com.epam.esm.model.Tag;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.MultiValueMap;
 
 import java.util.List;
 
@@ -26,10 +27,15 @@ public class TagDaoImpl implements TagDao {
     public List<Tag> getAll() {
         return jdbcTemplate.query(GET_ALL_TAGS, (rs, rowNum) -> {
             Tag tag = new Tag();
-            tag.setId(rs.getInt(1));
+            tag.setId(rs.getLong(1));
             tag.setName(rs.getString(2));
             return tag;
         });
+    }
+
+    @Override
+    public List<Tag> getByParameters(MultiValueMap<String, String> params) throws DaoException {
+        return null;
     }
 
     @Transactional
