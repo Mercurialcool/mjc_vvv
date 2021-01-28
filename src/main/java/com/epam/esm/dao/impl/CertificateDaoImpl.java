@@ -175,11 +175,6 @@ public class CertificateDaoImpl implements CertificateDao, RowMapper<Certificate
     }
 
     @Override
-    public List<Certificate> search(String template) throws DaoException {
-        return jdbcTemplate.query(SEARCH_QUERY, new Object[]{template}, new CertificateDaoImpl());
-    }
-
-    @Override
     public Certificate mapRow(ResultSet resultSet, int i) throws SQLException {
         Certificate certificate = new Certificate();
         certificate.setId(resultSet.getLong(PROVIDER_ID));

@@ -19,7 +19,7 @@ public class GiftCertificateController {
     private CertificateService certificateService;
 
     @Autowired
-    public void GiftCertificateController(CertificateService certificateService) {
+    public GiftCertificateController(CertificateService certificateService) {
         this.certificateService = certificateService;
     }
 

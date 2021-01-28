@@ -7,7 +7,6 @@ import java.util.List;
 
 public interface CertificateDao extends CrudDao<Certificate>{
         List<Certificate> getCertificateByTag(Tag tag) throws DaoException;
-        List<Certificate> search(String template) throws DaoException;
     }
 
 
