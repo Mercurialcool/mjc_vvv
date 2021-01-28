@@ -66,7 +66,7 @@ public class TagDaoImpl implements TagDao, RowMapper<Tag> {
     @Transactional
     @Override
     public void delete(Tag tag) {
-        jdbcTemplate.update(REMOVE_CERTIFICATE, tag.getId());
+        jdbcTemplate.update(REMOVE_TAG, tag.getId());
     }
 
     @Override
@@ -83,7 +83,7 @@ public class TagDaoImpl implements TagDao, RowMapper<Tag> {
     @Override
     public Tag getByName(String name) {
         try {
-            return jdbcTemplate.queryForObject(GET_TAG_BY_ID, new Object[]{name},
+            return jdbcTemplate.queryForObject(GET_TAG_BY_NAME, new Object[]{name},
                     new BeanPropertyRowMapper<>(Tag.class));
         } catch (EmptyResultDataAccessException e){
             return null;
@@ -92,7 +92,12 @@ public class TagDaoImpl implements TagDao, RowMapper<Tag> {
 
     @Override
     public Tag getById(Long id) throws DaoException {
-        return null;
+        try {
+            return jdbcTemplate.queryForObject(GET_TAG_BY_ID, new Object[]{id},
+                    new BeanPropertyRowMapper<>(Tag.class));
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
     }
 
     @Override
