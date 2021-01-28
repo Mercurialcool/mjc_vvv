@@ -3,6 +3,7 @@ package com.epam.esm.service.impl;
 import com.epam.esm.dao.DaoException;
 import com.epam.esm.dao.TagDao;
 import com.epam.esm.model.Tag;
+import com.epam.esm.service.CertificateServiceException;
 import com.epam.esm.service.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -38,13 +39,9 @@ public class TagServiceImpl implements TagService {
         }
     }
 
-    public boolean delete(Tag tag) throws DaoException {
-        try {
-            tagDao.delete(tag);
-        } catch (DataAccessException e) {
-            throw new DaoException(e);
-        }
-        return false;
+    @Override
+    public void delete(Tag tag, Long id) throws CertificateServiceException, DaoException {
+
     }
 
     @Override

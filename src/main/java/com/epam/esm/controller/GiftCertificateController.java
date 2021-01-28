@@ -41,10 +41,10 @@ public class GiftCertificateController {
         }
     }
 
-    @RequestMapping(method = RequestMethod.DELETE)
-    public boolean removeCertificate(@RequestBody Certificate certificate) throws DaoException {
+    @RequestMapping(method = RequestMethod.DELETE, value = "/{id}")
+    public void removeCertificate(@RequestBody Certificate certificate, @PathVariable Long id) throws DaoException {
         try {
-            return certificateService.delete(certificate);
+            certificateService.delete(certificate, id);
         } catch (CertificateServiceException e) {
             throw new DaoException(e);
         }

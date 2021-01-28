@@ -66,13 +66,14 @@ public class CertificateServiceImpl implements CertificateService {
     }
 
     @Override
-    public boolean delete(Certificate certificate) throws CertificateServiceException {
+    public void delete(Certificate certificate, Long id) throws CertificateServiceException {
         try {
+            certificateDao.getById(id);
+            certificate.setId(id);
             certificateDao.delete(certificate);
         } catch (DaoException e) {
             throw new CertificateServiceException(e);
         }
-        return false;
     }
 
     @Override

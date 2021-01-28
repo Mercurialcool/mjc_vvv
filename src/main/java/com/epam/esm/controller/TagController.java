@@ -37,9 +37,9 @@ public class TagController {
     }
 
     @RequestMapping(method = RequestMethod.DELETE)
-    public boolean delete(@RequestBody Tag tag) throws DaoException {
+    public void delete(@RequestBody Tag tag, @PathVariable Long id) throws DaoException {
         try {
-            return tagService.delete(tag);
+            tagService.delete(tag, id);
         } catch (CertificateServiceException e) {
             throw new DaoException(e);
         }
