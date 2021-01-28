@@ -50,10 +50,10 @@ public class GiftCertificateController {
         }
     }
 
-    @RequestMapping(method = RequestMethod.PUT)
-    public void updateCertificate(@RequestBody Certificate certificate) throws DaoException {
+    @RequestMapping(method = RequestMethod.PUT, value = "/{id}")
+    public void updateCertificate(@RequestBody Certificate certificate, @PathVariable Long id) throws DaoException {
         try {
-            certificateService.update(certificate);
+            certificateService.update(certificate, id);
         } catch (CertificateServiceException e) {
             throw new DaoException(e);
         }

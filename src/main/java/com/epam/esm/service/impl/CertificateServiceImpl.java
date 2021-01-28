@@ -76,8 +76,11 @@ public class CertificateServiceImpl implements CertificateService {
     }
 
     @Override
-    public void update(Certificate certificate) throws CertificateServiceException {
+    public void update(Certificate certificate, Long id) throws CertificateServiceException {
         try {
+            if (certificateDao.getById(id) == null)
+                return;//todo think what to return
+            certificate.setId(id);
             certificateDao.edit(certificate);
         } catch (DaoException e) {
             throw new CertificateServiceException(e);

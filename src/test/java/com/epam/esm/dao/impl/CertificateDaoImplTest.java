@@ -20,9 +20,9 @@ class CertificateDaoImplTest {
 
     @BeforeEach
     void setup() {
-        dao = new CertificateDaoImpl();
+        //dao = new CertificateDaoImpl();//todo how to include test context
         jdbcTemplate = Mockito.mock(JdbcTemplate.class);
-        dao.setJdbcTemplate(jdbcTemplate);
+        //dao.setJdbcTemplate(jdbcTemplate);
     }
 
     @Test

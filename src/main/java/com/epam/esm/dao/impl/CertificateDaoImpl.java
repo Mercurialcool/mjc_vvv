@@ -13,6 +13,8 @@ import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
@@ -20,10 +22,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.MultiValueMap;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Timestamp;
+import java.sql.*;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -35,12 +35,12 @@ import static com.epam.esm.dao.SqlProvider.*;
 @Repository
 @Transactional(readOnly = true)
 public class CertificateDaoImpl implements CertificateDao, RowMapper<Certificate> {
+
+    @Autowired
     private JdbcTemplate jdbcTemplate;
 
     @Autowired
-    public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-    }
+    private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     private List<Long> getCertificateIdsByTagId(Long tagId){
         return jdbcTemplate.query(GET_CERTIFICATES_BY_TAG_ID, new Object[] {tagId},
@@ -125,43 +125,35 @@ public class CertificateDaoImpl implements CertificateDao, RowMapper<Certificate
     @Transactional
     @Override
     public void edit(Certificate certificate) throws DaoException {
-        List<Object> params = new ArrayList<>();
-        List<String> names = new ArrayList<>();
-        if(certificate.getName()!=null) {
-            names.add(NAME);
-            params.add(certificate.getName());
-        }
-        if(certificate.getDescription()!=null) {
-            names.add(DESCRIPTION);
-            params.add(certificate.getDescription());
-        }
-        if(certificate.getPrice()!=null) {
-            names.add(PRICE);
-            params.add(certificate.getPrice());
-        }
-        if(certificate.getDuration()!=null) {
-            names.add(DURATION);
-            params.add(certificate.getDuration());
-        }
-        if(certificate.getLastUpdateDate()!=null) {
-            names.add(LAST_UPDATE_DATE);
-            params.add(new Timestamp(System.currentTimeMillis()));
-        }
-        String sql = "UPDATE gift_certificate SET " + String.join(",", names) + " WHERE id = ?";
-        params.add(certificate.getId());
-        try {
-            jdbcTemplate.update(sql, params.toArray());
-        } catch (DataAccessException e) {
-            throw new DaoException(e);
-        }
+        certificate.setLastUpdateDate(new Timestamp(System.currentTimeMillis()));
+        final BeanPropertySqlParameterSource paramSource = new BeanPropertySqlParameterSource(certificate);
+        paramSource.registerSqlType("lastUpdateDate", Types.TIMESTAMP);
+        StringBuilder stringBuilder = new StringBuilder("UPDATE gift_certificate SET ")
+                .append("last_update_date =:lastUpdateDate");
+        Optional.ofNullable(certificate.getName()).ifPresent(x-> stringBuilder.append(", name =:name"));
+        Optional.ofNullable(certificate.getDescription()).ifPresent(x-> stringBuilder.append(", description =:description"));
+        Optional.ofNullable(certificate.getPrice()).ifPresent(x-> stringBuilder.append(", price =:price"));
+        Optional.ofNullable(certificate.getPrice()).ifPresent(x-> stringBuilder.append(", duration =:duration"));
+        stringBuilder.append(" where id =:id");
+        this.namedParameterJdbcTemplate.update(stringBuilder.toString(), paramSource);
     }
 
     @Override
     public Certificate getByName(String name) {
         try {
-            return jdbcTemplate.queryForObject(GET_CERTIFICATE_BY_ID, new Object[]{name},
+            return jdbcTemplate.queryForObject(GET_CERTIFICATE_BY_NAME, new Object[]{name},
                     new BeanPropertyRowMapper<>(Certificate.class));
         } catch (EmptyResultDataAccessException e){
+            return null;
+        }
+    }
+
+    @Override
+    public Certificate getById(Long id) throws DaoException {
+        try {
+            return jdbcTemplate.queryForObject(GET_CERTIFICATE_BY_ID, new Object[]{id},
+                    new BeanPropertyRowMapper<>(Certificate.class));
+        } catch (EmptyResultDataAccessException e) {
             return null;
         }
     }

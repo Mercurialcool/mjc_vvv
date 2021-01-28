@@ -91,6 +91,11 @@ public class TagDaoImpl implements TagDao, RowMapper<Tag> {
     }
 
     @Override
+    public Tag getById(Long id) throws DaoException {
+        return null;
+    }
+
+    @Override
     public Tag mapRow(ResultSet resultSet, int i) throws SQLException {
         Tag tag = new Tag();
         tag.setId(resultSet.getLong(PROVIDER_ID));
