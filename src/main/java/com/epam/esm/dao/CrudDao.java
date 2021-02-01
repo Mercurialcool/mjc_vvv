@@ -4,6 +4,11 @@ import org.springframework.util.MultiValueMap;
 
 import java.util.List;
 
+/**
+ * Interface for CRUD operations of Certificate/Tag entity
+ * @param <T> Generic parameter for certificate and tag
+ */
+
 public interface CrudDao<T> {
     List<T> getAll() throws DaoException;
     List<T> getByParameters(MultiValueMap<String, String> params) throws DaoException;

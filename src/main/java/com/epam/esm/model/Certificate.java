@@ -8,7 +8,7 @@ import java.util.Set;
 
 public class Certificate extends Entity implements Serializable {
 
-   private String  name;
+   private String name;
    private String description;
    private Double price;
    private Integer duration;

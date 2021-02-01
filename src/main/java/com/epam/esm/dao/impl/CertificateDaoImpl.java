@@ -4,6 +4,7 @@ package com.epam.esm.dao.impl;
 
 import com.epam.esm.dao.CertificateDao;
 import com.epam.esm.dao.DaoException;
+import com.epam.esm.dao.RowMapCertificateProvider;
 import com.epam.esm.model.Certificate;
 import com.epam.esm.model.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,29 +13,29 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.MultiValueMap;
 
 import java.sql.*;
-import java.time.Instant;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static com.epam.esm.dao.RowMapProvider.*;
-import static com.epam.esm.dao.SqlProvider.*;
-
 @Repository
-@Transactional(readOnly = true)
-public class CertificateDaoImpl implements CertificateDao, RowMapper<Certificate> {
+public class CertificateDaoImpl implements CertificateDao {
+
+    public static final String GET_ALL_CERTIFICATES = "SELECT * FROM gift_certificate";
+    public static final String GET_CERTIFICATE_BY_ID = "SELECT * FROM gift_certificate WHERE id = ?";
+    public static final String GET_CERTIFICATE_BY_NAME = "SELECT * FROM gift_certificate WHERE name = ?";
+    public static final String ADD_NEW_CERTIFICATE = "INSERT INTO gift_certificate (name,description,price,duration,create_date,last_update_date) values(?,?,?,?,?,?)";
+    public static final String REMOVE_CERTIFICATE = "DELETE FROM gift_certificate WHERE id = ?";
+    public static final String GET_CERTIFICATES_BY_IDS = "SELECT * FROM gift_certificate WHERE id IN (?)";
+    public static final String GET_CERTIFICATES_BY_TAG_ID = "SELECT gift_certificate_id FROM tag_has_gift_certificate WHERE tag_id = ?";
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
@@ -47,10 +48,9 @@ public class CertificateDaoImpl implements CertificateDao, RowMapper<Certificate
                 (rs, rowNum) -> rs.getLong(1));
     }
 
-
     @Override
     public List<Certificate> getAll() {
-        return jdbcTemplate.query(GET_ALL_CERTIFICATES, new CertificateDaoImpl());
+        return jdbcTemplate.query(GET_ALL_CERTIFICATES, new RowMapCertificateProvider());
 
     }
 
@@ -83,10 +83,9 @@ public class CertificateDaoImpl implements CertificateDao, RowMapper<Certificate
                     .append(params.getFirst("description"))
                     .append("%'");
         }
-        return jdbcTemplate.query(stringBuilder.toString(), new CertificateDaoImpl());
+        return jdbcTemplate.query(stringBuilder.toString(), new RowMapCertificateProvider());
     }
 
-    @Transactional
     @Override
     public Certificate add(Certificate certificate) throws DaoException {
         KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -112,7 +111,6 @@ public class CertificateDaoImpl implements CertificateDao, RowMapper<Certificate
             return certificate;
         }
 
-    @Transactional
     @Override
     public void delete(Certificate certificate) throws DaoException {
         try {
@@ -122,7 +120,6 @@ public class CertificateDaoImpl implements CertificateDao, RowMapper<Certificate
         }
     }
 
-    @Transactional
     @Override
     public void edit(Certificate certificate) throws DaoException {
         certificate.setLastUpdateDate(new Timestamp(System.currentTimeMillis()));
@@ -163,19 +160,6 @@ public class CertificateDaoImpl implements CertificateDao, RowMapper<Certificate
         List<Long> ids = getCertificateIdsByTagId(tagName.getId());
         List<String> idsString = ids.stream().map((id) -> id.toString()).collect(Collectors.toList());
         String idList = String.join(",", idsString);
-        return jdbcTemplate.query(GET_CERTIFICATES_BY_IDS, new Object[]{idList}, new CertificateDaoImpl());
-    }
-
-    @Override
-    public Certificate mapRow(ResultSet resultSet, int i) throws SQLException {
-        Certificate certificate = new Certificate();
-        certificate.setId(resultSet.getLong(PROVIDER_ID));
-        certificate.setName(resultSet.getString(PROVIDER_NAME));
-        certificate.setDescription(resultSet.getString(PROVIDER_DESCRIPTION));
-        certificate.setPrice(resultSet.getDouble(PROVIDER_PRICE));
-        certificate.setDuration(resultSet.getInt(PROVIDER_DURATION));
-        certificate.setCreateDate(resultSet.getTimestamp(PROVIDER_CREATE_DATE));
-        certificate.setLastUpdateDate(resultSet.getTimestamp(PROVIDER_LAST_UPDATE_DATE));
-        return certificate;
+        return jdbcTemplate.query(GET_CERTIFICATES_BY_IDS, new Object[]{idList}, new RowMapCertificateProvider());
     }
 }

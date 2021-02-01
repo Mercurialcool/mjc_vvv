@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-
 @RestController
 @RequestMapping("/certificates")
 public class GiftCertificateController {
@@ -23,6 +22,13 @@ public class GiftCertificateController {
         this.certificateService = certificateService;
     }
 
+    /**
+     * Extracts MultiValueMap to get proper parameters for search query
+     * @param
+     * @return List of Certificate type
+     * @throws DaoException
+     */
+
     @RequestMapping(method = RequestMethod.GET)
     public List<Certificate> getByParameters(@RequestParam(required = false) MultiValueMap<String, String> params) throws DaoException {
         try {
@@ -31,6 +37,13 @@ public class GiftCertificateController {
             throw new DaoException(e);
         }
     }
+
+    /**
+     * Adds new Certificate to DB
+     * @param certificate full certificate entity
+     * @return Certificate object
+     * @throws DaoException
+     */
 
     @RequestMapping(method = RequestMethod.POST)
     public Certificate create(@RequestBody @Validated Certificate certificate) throws DaoException {
@@ -41,6 +54,13 @@ public class GiftCertificateController {
         }
     }
 
+    /**
+     * Deletes a Certificate
+     * @param certificate certificate object
+     * @param id an identifier to perform an operation by
+     * @throws DaoException
+     */
+
     @RequestMapping(method = RequestMethod.DELETE, value = "/{id}")
     public void removeCertificate(@RequestBody Certificate certificate, @PathVariable Long id) throws DaoException {
         try {
@@ -50,6 +70,13 @@ public class GiftCertificateController {
         }
     }
 
+    /**
+     * Updates Certificate by entered fields
+     * @param certificate Certificate object
+     * @param id An identifier to perform an operation by
+     * @throws DaoException
+     */
+
     @RequestMapping(method = RequestMethod.PUT, value = "/{id}")
     public void updateCertificate(@RequestBody Certificate certificate, @PathVariable Long id) throws DaoException {
         try {
@@ -58,6 +85,13 @@ public class GiftCertificateController {
             throw new DaoException(e);
         }
     }
+
+    /**
+     * Gets Certificate by Tag
+     * @param tag Tag entity
+     * @return List of certificates according to tag request
+     * @throws DaoException
+     */
 
     @RequestMapping(path = "/getByTag", method = RequestMethod.GET)
     public List<Certificate> getCertificateByTag(@RequestBody Tag tag) throws DaoException {

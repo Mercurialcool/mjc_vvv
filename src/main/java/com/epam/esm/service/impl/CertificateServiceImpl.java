@@ -10,6 +10,7 @@ import com.epam.esm.service.CertificateServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.MultiValueMap;
 
@@ -17,6 +18,7 @@ import org.springframework.util.MultiValueMap;
 import java.util.List;
 
 @Service
+@Transactional(readOnly = true)
 public class CertificateServiceImpl implements CertificateService {
 
     private CertificateDao certificateDao;
@@ -38,6 +40,7 @@ public class CertificateServiceImpl implements CertificateService {
         }
     }
 
+    @Transactional
     @Override
     public Certificate add(Certificate certificate) throws CertificateServiceException, DaoException {
         try {
@@ -65,6 +68,7 @@ public class CertificateServiceImpl implements CertificateService {
         }
     }
 
+    @Transactional
     @Override
     public void delete(Certificate certificate, Long id) throws CertificateServiceException {
         try {
@@ -76,11 +80,12 @@ public class CertificateServiceImpl implements CertificateService {
         }
     }
 
+    @Transactional
     @Override
     public void update(Certificate certificate, Long id) throws CertificateServiceException {
         try {
             if (certificateDao.getById(id) == null)
-                return;//todo think what to return
+                return;
             certificate.setId(id);
             certificateDao.edit(certificate);
         } catch (DaoException e) {

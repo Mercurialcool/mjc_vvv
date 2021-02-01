@@ -5,7 +5,12 @@ import com.epam.esm.model.Tag;
 
 import java.util.List;
 
-public interface CertificateDao extends CrudDao<Certificate>{
+/**
+ * Interface for Certificate entity
+ *
+ */
+
+public interface CertificateDao extends CrudDao<Certificate> {
         List<Certificate> getCertificateByTag(Tag tag) throws DaoException;
     }
 

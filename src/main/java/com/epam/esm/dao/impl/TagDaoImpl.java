@@ -1,8 +1,9 @@
 package com.epam.esm.dao.impl;
 
 import com.epam.esm.dao.DaoException;
+import com.epam.esm.dao.RowMapCertificateProvider;
+import com.epam.esm.dao.RowMapTagProvider;
 import com.epam.esm.dao.TagDao;
-import com.epam.esm.model.Certificate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -14,21 +15,28 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.MultiValueMap;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Optional;
 
-import static com.epam.esm.dao.RowMapProvider.*;
-import static com.epam.esm.dao.SqlProvider.*;
+import static com.epam.esm.dao.RowMapCertificateProvider.*;
 
 
 @Repository
-@Transactional(readOnly = true)
 public class TagDaoImpl implements TagDao, RowMapper<Tag> {
+
+    public static final String REMOVE_TAG = "DELETE FROM tag WHERE id = ?";
+    public static final String GET_ALL_TAGS = "SELECT * FROM tag";
+    public static final String ADD_NEW_TAG = "INSERT INTO tag values(?,?)";
+    public static final String GET_TAG_BY_ID = "SELECT * FROM tag WHERE id = ?";
+    public static final String GET_TAG_BY_NAME = "SELECT * FROM tag WHERE name = ?";
+    public static final String EDIT_TAG = "UPDATE tag SET name = ? WHERE id = ?";
+
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
@@ -39,10 +47,18 @@ public class TagDaoImpl implements TagDao, RowMapper<Tag> {
 
     @Override
     public List<Tag> getByParameters(MultiValueMap<String, String> params) throws DaoException {
-        return null;
+        if (CollectionUtils.isEmpty(params))
+            throw new DaoException();
+        final StringBuilder stringBuilder = new StringBuilder("SELECT * FROM gift_certificate WHERE ");
+        if (Optional.ofNullable(params.get("name")).isPresent() && Optional.ofNullable(params.get("description")).isPresent()) {
+            stringBuilder
+                    .append(" name LIKE '%")
+                    .append(params.getFirst("name"))
+                    .append("%'");
+        }
+        return jdbcTemplate.query(stringBuilder.toString(), new RowMapTagProvider());
     }
 
-    @Transactional
     @Override
     public Tag add(Tag tag) throws DaoException {
         KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -63,7 +79,6 @@ public class TagDaoImpl implements TagDao, RowMapper<Tag> {
         return tag;
     }
 
-    @Transactional
     @Override
     public void delete(Tag tag) {
         jdbcTemplate.update(REMOVE_TAG, tag.getId());
