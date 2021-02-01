@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.Set;
 
 public class Certificate extends Entity implements Serializable {
@@ -13,9 +14,9 @@ public class Certificate extends Entity implements Serializable {
    private Double price;
    private Integer duration;
    @JsonFormat(shape = JsonFormat.Shape.STRING)
-   private Timestamp createDate = new Timestamp(System.currentTimeMillis());
+   private Instant createDate = Instant.now();
    @JsonFormat(shape = JsonFormat.Shape.STRING)
-   private Timestamp lastUpdateDate = new Timestamp(System.currentTimeMillis());
+   private Instant lastUpdateDate = Instant.now();
 
    private Set<Tag> tags;
 
@@ -62,19 +63,19 @@ public class Certificate extends Entity implements Serializable {
       this.duration = duration;
    }
 
-   public Timestamp getCreateDate() {
+   public Instant getCreateDate() {
       return createDate;
    }
 
-   public void setCreateDate(Timestamp createDate) {
+   public void setCreateDate(Instant createDate) {
       this.createDate = createDate;
    }
 
-   public Timestamp getLastUpdateDate() {
+   public Instant getLastUpdateDate() {
       return lastUpdateDate;
    }
 
-   public void setLastUpdateDate(Timestamp lastUpdateDate) {
+   public void setLastUpdateDate(Instant lastUpdateDate) {
       this.lastUpdateDate = lastUpdateDate;
    }
 }

@@ -22,6 +22,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.MultiValueMap;
 
 import java.sql.*;
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -32,7 +33,7 @@ public class CertificateDaoImpl implements CertificateDao {
     public static final String GET_ALL_CERTIFICATES = "SELECT * FROM gift_certificate";
     public static final String GET_CERTIFICATE_BY_ID = "SELECT * FROM gift_certificate WHERE id = ?";
     public static final String GET_CERTIFICATE_BY_NAME = "SELECT * FROM gift_certificate WHERE name = ?";
-    public static final String ADD_NEW_CERTIFICATE = "INSERT INTO gift_certificate (name,description,price,duration,create_date,last_update_date) values(?,?,?,?,?,?)";
+    public static final String ADD_NEW_CERTIFICATE = "INSERT INTO gift_certificate (name,description,price,duration,create_date,last_update_date) values(:name,:description,:price,:duration,:createDate,:lastUpdateDate)";
     public static final String REMOVE_CERTIFICATE = "DELETE FROM gift_certificate WHERE id = ?";
     public static final String GET_CERTIFICATES_BY_IDS = "SELECT * FROM gift_certificate WHERE id IN (?)";
     public static final String GET_CERTIFICATES_BY_TAG_ID = "SELECT gift_certificate_id FROM tag_has_gift_certificate WHERE tag_id = ?";
@@ -90,19 +91,8 @@ public class CertificateDaoImpl implements CertificateDao {
     public Certificate add(Certificate certificate) throws DaoException {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         try {
-            PreparedStatementCreator preparedStatementCreator = con -> {
-                PreparedStatement preparedStatement = con.prepareStatement(ADD_NEW_CERTIFICATE, PreparedStatement.RETURN_GENERATED_KEYS);
-                int col = 1;
-                preparedStatement.setString(col++, certificate.getName());
-                preparedStatement.setString(col++, certificate.getDescription());
-                preparedStatement.setDouble(col++, certificate.getPrice());
-                preparedStatement.setInt(col++, certificate.getDuration());
-                preparedStatement.setTimestamp(col++, certificate.getCreateDate());
-                preparedStatement.setTimestamp(col++, certificate.getLastUpdateDate());
-                return preparedStatement;
-            };
-            jdbcTemplate.update(preparedStatementCreator, keyHolder);
-
+            final BeanPropertySqlParameterSource paramSource = new BeanPropertySqlParameterSource(certificate);
+            namedParameterJdbcTemplate.update(ADD_NEW_CERTIFICATE, paramSource, keyHolder, new String[]{"id"});
             certificate.setId(keyHolder.getKey().longValue());
         }
         catch (DataAccessException e){
@@ -122,7 +112,7 @@ public class CertificateDaoImpl implements CertificateDao {
 
     @Override
     public void edit(Certificate certificate) throws DaoException {
-        certificate.setLastUpdateDate(new Timestamp(System.currentTimeMillis()));
+        certificate.setLastUpdateDate(Instant.now());
         final BeanPropertySqlParameterSource paramSource = new BeanPropertySqlParameterSource(certificate);
         paramSource.registerSqlType("lastUpdateDate", Types.TIMESTAMP);
         StringBuilder stringBuilder = new StringBuilder("UPDATE gift_certificate SET ")
