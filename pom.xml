@@ -22,9 +22,17 @@
         <junit-jupiter-api.version>5.4.2</junit-jupiter-api.version>
         <junit.version>4.13-beta-3</junit.version>
         <mockito-all.version>1.10.19</mockito-all.version>
+        <h2.version>1.4.200</h2.version>
+        <spring-test.version>5.2.0.RELEASE</spring-test.version>
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>${h2.version}</version>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.datatype</groupId>
             <artifactId>jackson-datatype-jsr310</artifactId>
@@ -40,7 +48,6 @@
             <artifactId>spring-webmvc</artifactId>
             <version>${spring-webmvc.version}</version>
         </dependency>
-
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
@@ -83,6 +90,12 @@
             <groupId>org.mockito</groupId>
             <artifactId>mockito-all</artifactId>
             <version>${mockito-all.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-test</artifactId>
+            <version>${spring-test.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

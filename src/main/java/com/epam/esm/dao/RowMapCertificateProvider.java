@@ -25,7 +25,7 @@ public class RowMapCertificateProvider implements RowMapper<Certificate> {
             certificate.setPrice(resultSet.getDouble(PROVIDER_PRICE));
             certificate.setDuration(resultSet.getInt(PROVIDER_DURATION));
             certificate.setCreateDate(resultSet.getTimestamp(PROVIDER_CREATE_DATE) == null ? null : resultSet.getTimestamp(PROVIDER_CREATE_DATE).toInstant());
-            certificate.setCreateDate(resultSet.getTimestamp(PROVIDER_LAST_UPDATE_DATE) == null ? null : resultSet.getTimestamp(PROVIDER_LAST_UPDATE_DATE).toInstant());
+            certificate.setLastUpdateDate(resultSet.getTimestamp(PROVIDER_LAST_UPDATE_DATE) == null ? null : resultSet.getTimestamp(PROVIDER_LAST_UPDATE_DATE).toInstant());
             return certificate;
         }
     }
