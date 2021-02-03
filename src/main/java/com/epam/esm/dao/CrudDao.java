@@ -1,5 +1,7 @@
 package com.epam.esm.dao;
 
+import com.epam.esm.dao.exception.DaoException;
+import com.epam.esm.model.Certificate;
 import org.springframework.util.MultiValueMap;
 
 import java.util.List;
@@ -45,8 +47,9 @@ public interface CrudDao<T> {
      * Updates Certificate/Tag with given field changes
      * @param t generic parameter
      * @throws DaoException
+     * @return
      */
-    void edit(T t) throws DaoException;
+    Certificate edit(T t) throws DaoException;
 
     /**
      * Searches Certificate/Tag by name

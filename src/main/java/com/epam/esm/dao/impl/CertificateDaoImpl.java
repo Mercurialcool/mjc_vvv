@@ -3,8 +3,8 @@ package com.epam.esm.dao.impl;
 
 
 import com.epam.esm.dao.CertificateDao;
-import com.epam.esm.dao.DaoException;
 import com.epam.esm.dao.RowMapCertificateProvider;
+import com.epam.esm.dao.exception.DaoException;
 import com.epam.esm.model.Certificate;
 import com.epam.esm.model.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +12,6 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -111,7 +110,7 @@ public class CertificateDaoImpl implements CertificateDao {
     }
 
     @Override
-    public void edit(Certificate certificate) throws DaoException {
+    public Certificate edit(Certificate certificate) throws DaoException {
         certificate.setLastUpdateDate(Instant.now());
         final BeanPropertySqlParameterSource paramSource = new BeanPropertySqlParameterSource(certificate);
         paramSource.registerSqlType("lastUpdateDate", Types.TIMESTAMP);
@@ -123,6 +122,7 @@ public class CertificateDaoImpl implements CertificateDao {
         Optional.ofNullable(certificate.getPrice()).ifPresent(x-> stringBuilder.append(", duration =:duration"));
         stringBuilder.append(" where id =:id");
         this.namedParameterJdbcTemplate.update(stringBuilder.toString(), paramSource);
+        return certificate;
     }
 
     @Override

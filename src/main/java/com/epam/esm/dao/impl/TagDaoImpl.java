@@ -1,9 +1,9 @@
 package com.epam.esm.dao.impl;
 
-import com.epam.esm.dao.DaoException;
-import com.epam.esm.dao.RowMapCertificateProvider;
 import com.epam.esm.dao.RowMapTagProvider;
 import com.epam.esm.dao.TagDao;
+import com.epam.esm.dao.exception.DaoException;
+import com.epam.esm.model.Certificate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -85,7 +85,7 @@ public class TagDaoImpl implements TagDao, RowMapper<Tag> {
     }
 
     @Override
-    public void edit(Tag tag) throws DaoException {
+    public Certificate edit(Tag tag) throws DaoException {
         try {
             jdbcTemplate.update(EDIT_TAG,
                     tag.getId(),
@@ -93,6 +93,7 @@ public class TagDaoImpl implements TagDao, RowMapper<Tag> {
         } catch (DataAccessException e) {
             throw new DaoException(e);
         }
+        return null;
     }
 
     @Override

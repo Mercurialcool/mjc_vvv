@@ -24,6 +24,9 @@
         <mockito-all.version>1.10.19</mockito-all.version>
         <h2.version>1.4.200</h2.version>
         <spring-test.version>5.2.0.RELEASE</spring-test.version>
+        <log4j-api.version>2.12.1</log4j-api.version>
+        <mockito-core.version>3.6.28</mockito-core.version>
+        <mockito-junit-jupiter.version>3.6.28</mockito-junit-jupiter.version>
     </properties>
 
     <dependencies>
@@ -96,6 +99,22 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
             <version>${spring-test.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-api</artifactId>
+            <version>${log4j-api.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>${mockito-core.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-junit-jupiter</artifactId>
+            <version>${mockito-junit-jupiter.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

@@ -1,9 +1,11 @@
 package com.epam.esm.controller;
 
-import com.epam.esm.dao.DaoException;
+import com.epam.esm.dao.exception.DaoException;
 import com.epam.esm.model.Tag;
-import com.epam.esm.service.CertificateServiceException;
 import com.epam.esm.service.TagService;
+import com.epam.esm.service.exception.ServiceException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.MultiValueMap;
 import org.springframework.validation.annotation.Validated;
@@ -14,6 +16,8 @@ import java.util.List;
 @RestController
 @RequestMapping("/tags")
 public class TagController {
+    private static final Logger logger = LogManager.getLogger(TagController.class);
+
 
     @Autowired
     private TagService tagService;
@@ -26,11 +30,12 @@ public class TagController {
      */
 
     @RequestMapping(method = RequestMethod.GET)
-    public List<Tag> findAll(@RequestParam(required = false) MultiValueMap<String, String> params) throws DaoException {
+    public List<Tag> findAll(@RequestParam(required = false) MultiValueMap<String, String> params) {
         try {
             return tagService.getByParameters(params);
-        } catch (CertificateServiceException e) {
-            throw new DaoException(e);
+        } catch (ServiceException e) {
+            logger.error(e);
+            throw e;
         }
     }
 
@@ -42,11 +47,12 @@ public class TagController {
      */
 
     @RequestMapping(method = RequestMethod.POST)
-    public Tag add(@RequestBody @Validated Tag tag) throws DaoException {
+    public Tag add(@RequestBody @Validated Tag tag) {
         try {
             return tagService.add(tag);
-        } catch (CertificateServiceException e) {
-            throw new DaoException(e);
+        } catch (ServiceException e) {
+            logger.error(e);
+            throw e;
         }
     }
 
@@ -58,13 +64,12 @@ public class TagController {
      */
 
     @RequestMapping(method = RequestMethod.DELETE, value = "/{id}")
-    public void delete(@RequestBody Tag tag, @PathVariable Long id) throws DaoException {
+    public void delete(@RequestBody Tag tag, @PathVariable Long id) {
         try {
             tagService.delete(tag, id);
-        } catch (CertificateServiceException e) {
-            throw new DaoException(e);
+        } catch (ServiceException e) {
+            logger.error(e);
+            throw e;
         }
     }
-
-
 }

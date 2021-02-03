@@ -1,10 +1,12 @@
 package com.epam.esm.controller;
 
-import com.epam.esm.dao.DaoException;
+import com.epam.esm.dao.exception.DaoException;
 import com.epam.esm.model.Certificate;
 import com.epam.esm.model.Tag;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import com.epam.esm.service.CertificateService;
-import com.epam.esm.service.CertificateServiceException;
+import com.epam.esm.service.exception.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.MultiValueMap;
 import org.springframework.validation.annotation.Validated;
@@ -15,6 +17,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/certificates")
 public class GiftCertificateController {
+    private static final Logger logger = LogManager.getLogger(GiftCertificateController.class);
     private CertificateService certificateService;
 
     @Autowired
@@ -30,11 +33,12 @@ public class GiftCertificateController {
      */
 
     @RequestMapping(method = RequestMethod.GET)
-    public List<Certificate> getByParameters(@RequestParam(required = false) MultiValueMap<String, String> params) throws DaoException {
+    public List<Certificate> getByParameters(@RequestParam(required = false) MultiValueMap<String, String> params) {
         try {
             return certificateService.getByParameters(params);
-        } catch (CertificateServiceException e) {
-            throw new DaoException(e);
+        } catch (ServiceException e) {
+            logger.error(e);
+            throw e;
         }
     }
 
@@ -46,11 +50,12 @@ public class GiftCertificateController {
      */
 
     @RequestMapping(method = RequestMethod.POST)
-    public Certificate create(@RequestBody @Validated Certificate certificate) throws DaoException {
+    public Certificate create(@RequestBody @Validated Certificate certificate) {
         try {
             return certificateService.add(certificate);
-        } catch (CertificateServiceException e) {
-            throw new DaoException(e);
+        } catch (ServiceException e) {
+            logger.error(e);
+            throw e;
         }
     }
 
@@ -62,11 +67,12 @@ public class GiftCertificateController {
      */
 
     @RequestMapping(method = RequestMethod.DELETE, value = "/{id}")
-    public void removeCertificate(@RequestBody Certificate certificate, @PathVariable Long id) throws DaoException {
+    public void removeCertificate(@RequestBody Certificate certificate, @PathVariable Long id) {
         try {
             certificateService.delete(certificate, id);
-        } catch (CertificateServiceException e) {
-            throw new DaoException(e);
+        } catch (ServiceException e) {
+            logger.error(e);
+            throw e;
         }
     }
 
@@ -78,11 +84,12 @@ public class GiftCertificateController {
      */
 
     @RequestMapping(method = RequestMethod.PUT, value = "/{id}")
-    public void updateCertificate(@RequestBody Certificate certificate, @PathVariable Long id) throws DaoException {
+    public void updateCertificate(@RequestBody Certificate certificate, @PathVariable Long id) {
         try {
             certificateService.update(certificate, id);
-        } catch (CertificateServiceException e) {
-            throw new DaoException(e);
+        } catch (ServiceException e) {
+            logger.error(e);
+            throw e;
         }
     }
 
@@ -94,11 +101,12 @@ public class GiftCertificateController {
      */
 
     @RequestMapping(path = "/getByTag", method = RequestMethod.GET)
-    public List<Certificate> getCertificateByTag(@RequestBody Tag tag) throws DaoException {
+    public List<Certificate> getCertificateByTag(@RequestBody Tag tag) {
         try {
             return certificateService.getCertificateByTag(tag);
-        } catch (CertificateServiceException e) {
-            throw new DaoException(e);
+        } catch (ServiceException e) {
+            logger.error(e);
+            throw e;
         }
     }
 }
