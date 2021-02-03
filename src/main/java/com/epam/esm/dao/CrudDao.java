@@ -40,8 +40,9 @@ public interface CrudDao<T> {
      * Removes Certificate/Tag
      * @param t generic parameter
      * @throws DaoException
+     * @return
      */
-    void delete(T t) throws DaoException;
+    Certificate delete(T t) throws DaoException;
 
     /**
      * Updates Certificate/Tag with given field changes

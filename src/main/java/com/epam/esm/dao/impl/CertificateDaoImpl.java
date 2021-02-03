@@ -101,12 +101,13 @@ public class CertificateDaoImpl implements CertificateDao {
         }
 
     @Override
-    public void delete(Certificate certificate) throws DaoException {
+    public Certificate delete(Certificate certificate) throws DaoException {
         try {
             jdbcTemplate.update(REMOVE_CERTIFICATE, certificate.getId());
         } catch (DataAccessException e) {
             throw new DaoException(e);
         }
+        return certificate;
     }
 
     @Override

@@ -80,8 +80,9 @@ public class TagDaoImpl implements TagDao, RowMapper<Tag> {
     }
 
     @Override
-    public void delete(Tag tag) {
+    public Certificate delete(Tag tag) {
         jdbcTemplate.update(REMOVE_TAG, tag.getId());
+        return null;
     }
 
     @Override

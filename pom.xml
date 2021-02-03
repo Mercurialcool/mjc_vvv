@@ -27,6 +27,7 @@
         <log4j-api.version>2.12.1</log4j-api.version>
         <mockito-core.version>3.6.28</mockito-core.version>
         <mockito-junit-jupiter.version>3.6.28</mockito-junit-jupiter.version>
+        <spring-core.version>5.2.0.RELEASE</spring-core.version>
     </properties>
 
     <dependencies>
@@ -116,6 +117,12 @@
             <artifactId>mockito-junit-jupiter</artifactId>
             <version>${mockito-junit-jupiter.version}</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-core</artifactId>
+            <version>${spring-core.version}</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
     <build>

@@ -3,7 +3,7 @@ package com.epam.esm.dao.impl;
 import com.epam.esm.config.TestConfig;
 import com.epam.esm.dao.CertificateDao;
 import com.epam.esm.dao.RowMapTagProvider;
-import com.epam.esm.dao.exception.DaoException;
+import com.epam.esm.dao.TagDao;
 import com.epam.esm.model.Certificate;
 import com.epam.esm.model.Tag;
 import org.junit.Assert;
@@ -19,11 +19,13 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
+import java.time.Instant;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = TestConfig.class)
@@ -34,7 +36,11 @@ class CertificateDaoImplTest {
     @Autowired
     private CertificateDao certificateDao;
 
+    @Autowired
+    private TagDao tagDao;
+
     private List<Certificate> certificateList;
+    private Set<Certificate> certificateSet;
 
     @BeforeEach
     void getCertificates() {
@@ -72,4 +78,45 @@ class CertificateDaoImplTest {
         Assert.assertEquals(Collections.emptyList(), all);
     }
 
+    @Test
+    void delete() {
+        Certificate certificate = new Certificate();
+        final long id = certificateList.get(0).getId();
+        Certificate was = certificateDao.getById(id);
+        Certificate quant = certificateDao.delete(certificate);
+        Certificate actual = certificateDao.getById(id);
+        assertNotNull(was);
+        assertEquals(1, quant);
+        assertNull(actual);
     }
+
+    @Test
+    void add() {
+        Certificate certificate = new Certificate();
+        certificate.setName("testName");
+        certificate.setDescription("testDescription");
+        certificate.setPrice(10.0);
+        certificate.setDuration(120);
+        certificate.setCreateDate(Instant.now());
+
+        Certificate notExisted = certificateDao.getByName(certificate.getName());
+        Certificate toBeCreated = certificateDao.add(certificate);
+        Certificate actual = certificateDao.getByName(certificate.getName());
+
+        assertNull(notExisted);
+        assertNotNull(toBeCreated);
+        assertEquals(actual, certificate);
+    }
+
+    @Test
+    void getAllByTagName() {
+        final Tag tagName = new Tag();
+        List<Certificate> actual = certificateDao.getCertificateByTag(tagName);
+        Set<Certificate> expected = certificateSet.stream().filter(certificate -> {
+            return certificate.getTags().stream().anyMatch(tag -> tag.getName().equals(tagName));
+        }).collect(Collectors.toSet());
+        assertEquals(expected, actual);
+    }
+
+    
+}
