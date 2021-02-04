@@ -54,7 +54,6 @@ class CertificateServiceImplTest {
     @Test
     void getCertificateByTag() {
         final Tag tag = new Tag();
-
         List<Certificate> expected = certificateService.getCertificateByTag(tag);
         assertEquals(expected, given(certificateDao.getCertificateByTag(tag)));
         then(certificateDao).should(only()).getCertificateByTag(tag);

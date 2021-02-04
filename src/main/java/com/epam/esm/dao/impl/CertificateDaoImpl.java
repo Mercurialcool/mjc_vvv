@@ -7,6 +7,7 @@ import com.epam.esm.dao.RowMapCertificateProvider;
 import com.epam.esm.dao.exception.DaoException;
 import com.epam.esm.model.Certificate;
 import com.epam.esm.model.Tag;
+import com.epam.esm.service.exception.certificate.CertificateNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -59,16 +60,6 @@ public class CertificateDaoImpl implements CertificateDao {
         if (CollectionUtils.isEmpty(params))
             throw new DaoException();
         final StringBuilder stringBuilder = new StringBuilder("SELECT * FROM gift_certificate WHERE ");
-        if (Optional.ofNullable(params.get("name")).isPresent() && Optional.ofNullable(params.get("description")).isPresent()) {
-            stringBuilder
-                    .append(" name LIKE '%")
-                    .append(params.getFirst("name"))
-                    .append("%'")
-                    .append(" and ")
-                    .append("description LIKE '%")
-                    .append(params.getFirst("description"))
-                    .append("%'");
-        }
 
         if (Optional.ofNullable(params.get("name")).isPresent()) {
             stringBuilder
@@ -76,14 +67,20 @@ public class CertificateDaoImpl implements CertificateDao {
                     .append(params.getFirst("name"))
                     .append("%'");
         }
-
+        if (Optional.ofNullable(params.get("name")).isPresent() && Optional.ofNullable(params.get("description")).isPresent()) {
+                stringBuilder.append(" and ");
+            }
         if (Optional.ofNullable(params.get("description")).isPresent()) {
             stringBuilder
                     .append(" description LIKE '%")
                     .append(params.getFirst("description"))
                     .append("%'");
         }
-        return jdbcTemplate.query(stringBuilder.toString(), new RowMapCertificateProvider());
+         List<Certificate> certificateList = jdbcTemplate.query(stringBuilder.toString(), new RowMapCertificateProvider());
+        if (certificateList.isEmpty()) {
+            throw new CertificateNotFoundException("Not found");
+        }
+        return certificateList;
     }
 
     @Override
@@ -98,7 +95,7 @@ public class CertificateDaoImpl implements CertificateDao {
             throw new DaoException(e);
     }
             return certificate;
-        }
+    }
 
     @Override
     public Certificate delete(Certificate certificate) throws DaoException {
@@ -114,13 +111,13 @@ public class CertificateDaoImpl implements CertificateDao {
     public Certificate edit(Certificate certificate) throws DaoException {
         certificate.setLastUpdateDate(Instant.now());
         final BeanPropertySqlParameterSource paramSource = new BeanPropertySqlParameterSource(certificate);
-        paramSource.registerSqlType("lastUpdateDate", Types.TIMESTAMP);
+        paramSource.registerSqlType("lastUpdateDate", Types.OTHER);
         StringBuilder stringBuilder = new StringBuilder("UPDATE gift_certificate SET ")
                 .append("last_update_date =:lastUpdateDate");
         Optional.ofNullable(certificate.getName()).ifPresent(x-> stringBuilder.append(", name =:name"));
         Optional.ofNullable(certificate.getDescription()).ifPresent(x-> stringBuilder.append(", description =:description"));
         Optional.ofNullable(certificate.getPrice()).ifPresent(x-> stringBuilder.append(", price =:price"));
-        Optional.ofNullable(certificate.getPrice()).ifPresent(x-> stringBuilder.append(", duration =:duration"));
+        Optional.ofNullable(certificate.getDuration()).ifPresent(x-> stringBuilder.append(", duration =:duration"));
         stringBuilder.append(" where id =:id");
         this.namedParameterJdbcTemplate.update(stringBuilder.toString(), paramSource);
         return certificate;

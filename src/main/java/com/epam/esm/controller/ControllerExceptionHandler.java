@@ -28,7 +28,7 @@ public class ControllerExceptionHandler {
 
     private ErrorDto handle(String code) {
         Locale locale = LocaleContextHolder.getLocale();
-        String message = messageSource.getMessage(code, null, locale);
+        String message = messageSource.getMessage("error.not.found", null, locale);
         return new ErrorDto(message, code);
     }
 
@@ -51,7 +51,7 @@ public class ControllerExceptionHandler {
     }
 
     @ExceptionHandler(value = UnableToDeleteCertificateException.class)
-    @ResponseStatus(HttpStatus.CONFLICT)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorDto handlerUnableDeleteGiftCertificateException(UnableToDeleteCertificateException e) {
         return handle(e.getMessage());
     }

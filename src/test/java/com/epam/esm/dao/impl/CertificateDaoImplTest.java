@@ -35,7 +35,7 @@ class CertificateDaoImplTest {
 
     @Autowired
     private CertificateDao certificateDao;
-
+    
     @Autowired
     private TagDao tagDao;
 
@@ -118,5 +118,16 @@ class CertificateDaoImplTest {
         assertEquals(expected, actual);
     }
 
-    
+//    @Test
+//    void getByParameters() {
+//        MultiValueMap<String, String> params = null;
+//        final Tag tagName = new Tag(tagDao.getByName(tag.getName()));
+//        final String queryPart = "tnt";
+//        List<Certificate> actual = certificateDao.getByParameters(params);
+//        List<Certificate> expected = certificateSet.stream().filter(certificate ->  {
+//            return (certificate.getName().contains(queryPart)) || certificate.getDescription().contains(queryPart)
+//                    && certificate.getTags().stream().anyMatch(tag -> tag.getName().equals(tagName));
+//        }).collect(Collectors.toList());
+//        assertEquals(expected, actual);
+//    }
 }

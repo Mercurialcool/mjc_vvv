@@ -1,9 +1,12 @@
 package com.epam.esm.dao.impl;
 
+import com.epam.esm.dao.RowMapCertificateProvider;
 import com.epam.esm.dao.RowMapTagProvider;
 import com.epam.esm.dao.TagDao;
 import com.epam.esm.dao.exception.DaoException;
 import com.epam.esm.model.Certificate;
+import com.epam.esm.service.exception.certificate.CertificateNotFoundException;
+import com.epam.esm.service.exception.tag.TagNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -12,6 +15,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import com.epam.esm.model.Tag;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
@@ -32,13 +37,16 @@ public class TagDaoImpl implements TagDao, RowMapper<Tag> {
 
     public static final String REMOVE_TAG = "DELETE FROM tag WHERE id = ?";
     public static final String GET_ALL_TAGS = "SELECT * FROM tag";
-    public static final String ADD_NEW_TAG = "INSERT INTO tag values(?,?)";
+    public static final String ADD_NEW_TAG = "INSERT INTO tag (name) values(:name)";
     public static final String GET_TAG_BY_ID = "SELECT * FROM tag WHERE id = ?";
     public static final String GET_TAG_BY_NAME = "SELECT * FROM tag WHERE name = ?";
     public static final String EDIT_TAG = "UPDATE tag SET name = ? WHERE id = ?";
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
+
+    @Autowired
+    private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     @Override
     public List<Tag> getAll() {
@@ -49,28 +57,26 @@ public class TagDaoImpl implements TagDao, RowMapper<Tag> {
     public List<Tag> getByParameters(MultiValueMap<String, String> params) throws DaoException {
         if (CollectionUtils.isEmpty(params))
             throw new DaoException();
-        final StringBuilder stringBuilder = new StringBuilder("SELECT * FROM gift_certificate WHERE ");
-        if (Optional.ofNullable(params.get("name")).isPresent() && Optional.ofNullable(params.get("description")).isPresent()) {
+        final StringBuilder stringBuilder = new StringBuilder("SELECT * FROM tag WHERE ");
+        if (Optional.ofNullable(params.get("name")).isPresent()) {
             stringBuilder
                     .append(" name LIKE '%")
                     .append(params.getFirst("name"))
                     .append("%'");
         }
-        return jdbcTemplate.query(stringBuilder.toString(), new RowMapTagProvider());
+        List<Tag> tagList = jdbcTemplate.query(stringBuilder.toString(), new RowMapTagProvider());
+        if (tagList.isEmpty()) {
+            throw new TagNotFoundException("Not found");
+        }
+        return tagList;
     }
 
     @Override
     public Tag add(Tag tag) throws DaoException {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         try {
-            PreparedStatementCreator preparedStatementCreator = con -> {
-                PreparedStatement preparedStatement = con.prepareStatement(ADD_NEW_TAG, PreparedStatement.RETURN_GENERATED_KEYS);
-                int col = 1;
-                preparedStatement.setString(col++, tag.getName());
-                return preparedStatement;
-            };
-            jdbcTemplate.update(preparedStatementCreator, keyHolder);
-
+            final BeanPropertySqlParameterSource paramSource = new BeanPropertySqlParameterSource(tag);
+            namedParameterJdbcTemplate.update(ADD_NEW_TAG, paramSource, keyHolder, new String[]{"id"});
             tag.setId(keyHolder.getKey().longValue());
         }
         catch (DataAccessException e){
