@@ -3,6 +3,7 @@ package com.epam.esm.dao.impl;
 
 
 import com.epam.esm.dao.CertificateDao;
+import com.epam.esm.dao.CombinedSqlParameterSource;
 import com.epam.esm.dao.RowMapCertificateProvider;
 import com.epam.esm.dao.exception.DaoException;
 import com.epam.esm.model.Certificate;
@@ -33,7 +34,7 @@ public class CertificateDaoImpl implements CertificateDao {
     public static final String GET_ALL_CERTIFICATES = "SELECT * FROM gift_certificate";
     public static final String GET_CERTIFICATE_BY_ID = "SELECT * FROM gift_certificate WHERE id = ?";
     public static final String GET_CERTIFICATE_BY_NAME = "SELECT * FROM gift_certificate WHERE name = ?";
-    public static final String ADD_NEW_CERTIFICATE = "INSERT INTO gift_certificate (name,description,price,duration,create_date,last_update_date) values(:name,:description,:price,:duration,:createDate,:lastUpdateDate)";
+    public static final String ADD_NEW_CERTIFICATE = "INSERT INTO gift_certificate (name,description,price,duration,create_date,last_update_date) values(:name,:description,:price,:duration,:createDateTime,:lastUpdatedTime)";
     public static final String REMOVE_CERTIFICATE = "DELETE FROM gift_certificate WHERE id = ?";
     public static final String GET_CERTIFICATES_BY_IDS = "SELECT * FROM gift_certificate WHERE id IN (?)";
     public static final String GET_CERTIFICATES_BY_TAG_ID = "SELECT gift_certificate_id FROM tag_has_gift_certificate WHERE tag_id = ?";
@@ -87,8 +88,10 @@ public class CertificateDaoImpl implements CertificateDao {
     public Certificate add(Certificate certificate) throws DaoException {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         try {
-            final BeanPropertySqlParameterSource paramSource = new BeanPropertySqlParameterSource(certificate);
-            namedParameterJdbcTemplate.update(ADD_NEW_CERTIFICATE, paramSource, keyHolder, new String[]{"id"});
+            final CombinedSqlParameterSource paramSource = new CombinedSqlParameterSource(certificate);
+            paramSource.addValue("lastUpdatedTime", Timestamp.from(certificate.getLastUpdateDate()));
+            paramSource.addValue("createDateTime", Timestamp.from(certificate.getCreateDate()));
+                    namedParameterJdbcTemplate.update(ADD_NEW_CERTIFICATE, paramSource, keyHolder, new String[]{"id"});
             certificate.setId(keyHolder.getKey().longValue());
         }
         catch (DataAccessException e){
@@ -110,10 +113,12 @@ public class CertificateDaoImpl implements CertificateDao {
     @Override
     public Certificate edit(Certificate certificate) throws DaoException {
         certificate.setLastUpdateDate(Instant.now());
-        final BeanPropertySqlParameterSource paramSource = new BeanPropertySqlParameterSource(certificate);
-        paramSource.registerSqlType("lastUpdateDate", Types.OTHER);
+        //final BeanPropertySqlParameterSource paramSource = new BeanPropertySqlParameterSource(certificate);
+        //paramSource.registerSqlType("lastUpdateDate", Types.TIMESTAMP);
+        final CombinedSqlParameterSource paramSource = new CombinedSqlParameterSource(certificate);
+        paramSource.addValue("lastUpdatedTime", Timestamp.from(certificate.getLastUpdateDate()));
         StringBuilder stringBuilder = new StringBuilder("UPDATE gift_certificate SET ")
-                .append("last_update_date =:lastUpdateDate");
+                .append("last_update_date =:lastUpdatedTime");
         Optional.ofNullable(certificate.getName()).ifPresent(x-> stringBuilder.append(", name =:name"));
         Optional.ofNullable(certificate.getDescription()).ifPresent(x-> stringBuilder.append(", description =:description"));
         Optional.ofNullable(certificate.getPrice()).ifPresent(x-> stringBuilder.append(", price =:price"));
