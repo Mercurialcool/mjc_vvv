@@ -1,6 +1,5 @@
 package com.epam.esm.controller;
 
-import com.epam.esm.dao.exception.DaoException;
 import com.epam.esm.model.Certificate;
 import com.epam.esm.model.Tag;
 import org.apache.logging.log4j.LogManager;
@@ -29,7 +28,6 @@ public class GiftCertificateController {
      * Extracts MultiValueMap to get proper parameters for search query
      * @param
      * @return List of Certificate type
-     * @throws DaoException
      */
 
     @RequestMapping(method = RequestMethod.GET)
@@ -46,7 +44,6 @@ public class GiftCertificateController {
      * Adds new Certificate to DB
      * @param certificate full certificate entity
      * @return Certificate object
-     * @throws DaoException
      */
 
     @RequestMapping(method = RequestMethod.POST)
@@ -63,7 +60,6 @@ public class GiftCertificateController {
      * Deletes a Certificate
      * @param certificate certificate object
      * @param id an identifier to perform an operation by
-     * @throws DaoException
      */
 
     @RequestMapping(method = RequestMethod.DELETE, value = "/{id}")
@@ -77,16 +73,29 @@ public class GiftCertificateController {
     }
 
     /**
+     * Finds Certificate by ID
+     * @param id An identifier to perform an operation by
+     */
+    @RequestMapping(method = RequestMethod.GET, value = "/{id}")
+    public void getCertificateById(@PathVariable Long id) {
+        try {
+            certificateService.getById(id);
+        } catch (ServiceException e) {
+            logger.error(e);
+            throw e;
+        }
+    }
+
+    /**
      * Updates Certificate by entered fields
      * @param certificate Certificate object
      * @param id An identifier to perform an operation by
-     * @throws DaoException
      */
 
     @RequestMapping(method = RequestMethod.PUT, value = "/{id}")
-    public void updateCertificate(@RequestBody Certificate certificate, @PathVariable Long id) {
+    public Certificate updateCertificate(@RequestBody Certificate certificate, @PathVariable Long id) {
         try {
-            certificateService.update(certificate, id);
+            return certificateService.update(certificate, id);
         } catch (ServiceException e) {
             logger.error(e);
             throw e;
@@ -97,7 +106,6 @@ public class GiftCertificateController {
      * Gets Certificate by Tag
      * @param tag Tag entity
      * @return List of certificates according to tag request
-     * @throws DaoException
      */
 
     @RequestMapping(path = "/getByTag", method = RequestMethod.GET)

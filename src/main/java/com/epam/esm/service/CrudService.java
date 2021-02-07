@@ -47,4 +47,12 @@ public interface CrudService<T> {
      * @throws DaoException
      */
     T getByName(String name) throws ServiceException, DaoException;
+
+    /**
+     * Searches Certificate/Tag by id at a service layer
+     * @param id Parameter of search
+     * @return Certificate/tag
+     * @throws ServiceException
+     */
+    T getById(Long id) throws ServiceException;
 }

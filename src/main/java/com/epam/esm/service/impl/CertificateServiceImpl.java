@@ -95,9 +95,22 @@ public class CertificateServiceImpl implements CertificateService {
         }
     }
 
+    @Override
+    public Certificate getById(Long id) throws ServiceException {
+        try {
+            Certificate certificate = certificateDao.getById(id);
+            if(certificate == null) {
+                throw new CertificateNotFoundException("Certificate not found");
+            }
+            return certificateDao.getById(id);
+        } catch (DaoException e) {
+            throw new ServiceException(e);
+        }
+    }
+
     @Transactional
     @Override
-    public void update(Certificate certificate, Long id) throws ServiceException {
+    public Certificate update(Certificate certificate, Long id) throws ServiceException {
         try {
             if (certificateDao.getById(id) == null)
                 throw new CertificateNotFoundException("Certificate was not found");
@@ -106,7 +119,7 @@ public class CertificateServiceImpl implements CertificateService {
                 throw new UnableToUpdateCertificateException("Unable to update");
             }
             certificate.setId(id);
-            certificateDao.edit(certificate);
+            return certificateDao.edit(certificate);
         } catch (DaoException e) {
             throw new ServiceException(e);
         }

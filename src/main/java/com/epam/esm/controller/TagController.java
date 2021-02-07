@@ -30,7 +30,7 @@ public class TagController {
      */
 
     @RequestMapping(method = RequestMethod.GET)
-    public List<Tag> findAll(@RequestParam(required = false) MultiValueMap<String, String> params) {
+    public List<Tag> getByParameters(@RequestParam(required = false) MultiValueMap<String, String> params) {
         try {
             return tagService.getByParameters(params);
         } catch (ServiceException e) {
@@ -50,6 +50,20 @@ public class TagController {
     public Tag add(@RequestBody @Validated Tag tag) {
         try {
             return tagService.add(tag);
+        } catch (ServiceException e) {
+            logger.error(e);
+            throw e;
+        }
+    }
+
+    /**
+     * Finds Tag by ID
+     * @param id An identifier to perform an operation by
+     */
+    @RequestMapping(method = RequestMethod.GET, value = "/{id}")
+    public void getCertificateById(@PathVariable Long id) {
+        try {
+            tagService.getById(id);
         } catch (ServiceException e) {
             logger.error(e);
             throw e;

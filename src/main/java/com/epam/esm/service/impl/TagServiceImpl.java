@@ -2,13 +2,9 @@ package com.epam.esm.service.impl;
 
 import com.epam.esm.dao.TagDao;
 import com.epam.esm.dao.exception.DaoException;
-import com.epam.esm.model.Certificate;
 import com.epam.esm.model.Tag;
 import com.epam.esm.service.TagService;
 import com.epam.esm.service.exception.ServiceException;
-import com.epam.esm.service.exception.certificate.CertificateAlreadyExistsException;
-import com.epam.esm.service.exception.certificate.CertificateNotFoundException;
-import com.epam.esm.service.exception.certificate.UnableToDeleteCertificateException;
 import com.epam.esm.service.exception.tag.TagAlreadyExistsException;
 import com.epam.esm.service.exception.tag.TagNotFoundException;
 import com.epam.esm.service.exception.tag.UnableToDeleteTagException;
@@ -85,6 +81,19 @@ public class TagServiceImpl implements TagService {
             return tagDao.getByName(name);
         } catch (DaoException e) {
             throw new DaoException(e);
+        }
+    }
+
+    @Override
+    public Tag getById(Long id) throws ServiceException {
+        try {
+            Tag tag = tagDao.getById(id);
+            if (tag == null) {
+                throw new TagNotFoundException("Tag not found");
+            }
+            return tagDao.getById(id);
+        } catch (DaoException e) {
+            throw new ServiceException(e);
         }
     }
 }

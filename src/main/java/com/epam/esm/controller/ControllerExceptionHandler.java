@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.Locale;
 
+import static com.epam.esm.service.exception.ErrorCodes.*;
+
 @RestControllerAdvice
 public class ControllerExceptionHandler {
 
@@ -34,50 +36,49 @@ public class ControllerExceptionHandler {
 
     @ExceptionHandler(value = Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ErrorDto handlerSurprise(Exception e) {
+    public ErrorDto handlerInternal(Exception e) {
         return new ErrorDto(e.getMessage(), INTERNAL_SERVER_ERROR_CODE);
     }
 
     @ExceptionHandler(value = CertificateNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorDto handlerGiftCertificateNotFoundException(CertificateNotFoundException e) {
-        return handle(e.getMessage());
+    public ErrorDto handlerCertificateNotFoundException(CertificateNotFoundException e) {
+        return new ErrorDto(e.getMessage(), CERTIFICATE_NOT_FOUND.getCode());
     }
 
     @ExceptionHandler(value = CertificateAlreadyExistsException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
-    public ErrorDto handlerGiftCertificateAlreadyExistException(CertificateAlreadyExistsException e) {
-        return handle(e.getMessage());
+    public ErrorDto handlerCertificateAlreadyExistException(CertificateAlreadyExistsException e) {
+        return new ErrorDto(e.getMessage(), CERTIFICATE_ALREADY_EXISTS.getCode());
     }
 
     @ExceptionHandler(value = UnableToDeleteCertificateException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorDto handlerUnableDeleteGiftCertificateException(UnableToDeleteCertificateException e) {
-        return handle(e.getMessage());
+    public ErrorDto handlerUnableToDeleteCertificateException(UnableToDeleteCertificateException e) {
+        return new ErrorDto(e.getMessage(), UNABLE_TO_DELETE_CERTIFICATE.getCode());
     }
 
     @ExceptionHandler(value = UnableToUpdateCertificateException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
-    public ErrorDto handlerUnableUpdateGiftCertificate(UnableToUpdateCertificateException e) {
-        return handle(e.getMessage());
+    public ErrorDto handlerUnableToUpdateCertificate(UnableToUpdateCertificateException e) {
+        return new ErrorDto(e.getMessage(), UNABLE_TO_UPDATE_CERTIFICATE.getCode());
     }
-
 
     @ExceptionHandler(value = TagNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorDto handlerTagNotFoundException(TagNotFoundException e) {
-        return handle(e.getMessage());
+        return new ErrorDto(e.getMessage(), TAG_NOT_FOUND.getCode());
     }
 
     @ExceptionHandler(value = TagAlreadyExistsException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
-    public ErrorDto handlerTagAlreadyExistException(TagAlreadyExistsException e) {
-        return handle(e.getMessage());
+    public ErrorDto handlerTagAlreadyExistsException(TagAlreadyExistsException e) {
+        return new ErrorDto(e.getMessage(), TAG_ALREADY_EXISTS.getCode());
     }
 
     @ExceptionHandler(value = UnableToDeleteTagException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
-    public ErrorDto handlerUnableDeleteTagException(UnableToDeleteTagException e) {
-        return handle(e.getMessage());
+    public ErrorDto handlerUnableToDeleteTagException(UnableToDeleteTagException e) {
+        return new ErrorDto(e.getMessage(), UNABLE_TO_DELETE_TAG.getCode());
     }
 }

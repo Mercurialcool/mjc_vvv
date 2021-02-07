@@ -17,7 +17,7 @@ public interface CertificateService extends CrudService<Certificate> {
      * @param id ID of a certificate
      * @throws ServiceException
      */
-    void update(Certificate certificate, Long id) throws ServiceException;
+    Certificate update(Certificate certificate, Long id) throws ServiceException;
 
     /**
      * Searches Certificates by tag

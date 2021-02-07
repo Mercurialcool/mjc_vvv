@@ -28,6 +28,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static com.epam.esm.dao.RowMapCertificateProvider.*;
 
@@ -39,6 +41,7 @@ public class TagDaoImpl implements TagDao, RowMapper<Tag> {
     public static final String GET_ALL_TAGS = "SELECT * FROM tag";
     public static final String ADD_NEW_TAG = "INSERT INTO tag (name) values(:name)";
     public static final String GET_TAG_BY_ID = "SELECT * FROM tag WHERE id = ?";
+    public static final String GET_TAGS_BY_IDS ="SELECT * FROM tag WHERE id IN (?)";
     public static final String GET_TAG_BY_NAME = "SELECT * FROM tag WHERE name = ?";
     public static final String EDIT_TAG = "UPDATE tag SET name = ? WHERE id = ?";
 
@@ -121,6 +124,14 @@ public class TagDaoImpl implements TagDao, RowMapper<Tag> {
         } catch (EmptyResultDataAccessException e) {
             return null;
         }
+    }
+
+    @Override
+    public Set<Tag> getTagsByIds(List<Long> ids) throws DaoException {
+        List<String> idsString = ids.stream().map((id) -> id.toString()).collect(Collectors.toList());
+        String idList = String.join(",", idsString);
+        return jdbcTemplate.query(GET_TAGS_BY_IDS, new Object[]{idList}, new RowMapTagProvider())
+                .stream().collect(Collectors.toSet());
     }
 
     @Override
