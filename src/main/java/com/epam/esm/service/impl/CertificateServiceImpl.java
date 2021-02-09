@@ -12,7 +12,6 @@ import com.epam.esm.service.exception.certificate.CertificateNotFoundException;
 import com.epam.esm.service.exception.certificate.UnableToDeleteCertificateException;
 import com.epam.esm.service.exception.certificate.UnableToUpdateCertificateException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -38,47 +37,31 @@ public class CertificateServiceImpl implements CertificateService {
 
     @Override
     public List<Certificate> getByParameters(MultiValueMap<String, String> params) throws ServiceException {
-        try {
             if (CollectionUtils.isEmpty(params))
                 return certificateDao.getAll();
             return certificateDao.getByParameters(params);
-        } catch (DaoException e) {
-           throw new ServiceException(e);
-        }
     }
 
     @Transactional
     @Override
     public Certificate add(Certificate certificate) throws ServiceException, DaoException {
-        try {
+
             if(certificateDao.getByName(certificate.getName())!= null){
                 throw new CertificateAlreadyExistsException("Certificate already exists");
             }
-        } catch (DaoException e) {
-            throw new ServiceException(e);
-        }
         if (certificate.getTags()!=null){
             for (Tag tag: certificate.getTags()){
-                try {
                     if (tagDao.getByName(tag.getName())==null){
                         tagDao.add(tag);
                     }
-                } catch (DataAccessException e) {
-                    throw new DaoException(e);
-                }
             }
         }
-        try {
             return certificateDao.add(certificate);
-        } catch (DaoException e) {
-           throw new ServiceException(e);
-        }
     }
 
     @Transactional
     @Override
     public void delete(Certificate certificate, Long id) throws ServiceException {
-        try {
             if(certificateDao.getById(id) == null) {
                 throw new CertificateNotFoundException("Certificate not found");
             }
@@ -90,28 +73,20 @@ public class CertificateServiceImpl implements CertificateService {
             certificateDao.getById(id);
             certificate.setId(id);
             certificateDao.delete(certificate);
-        } catch (DaoException e) {
-            throw new ServiceException(e);
-        }
     }
 
     @Override
     public Certificate getById(Long id) throws ServiceException {
-        try {
             Certificate certificate = certificateDao.getById(id);
             if(certificate == null) {
                 throw new CertificateNotFoundException("Certificate not found");
             }
             return certificateDao.getById(id);
-        } catch (DaoException e) {
-            throw new ServiceException(e);
-        }
     }
 
     @Transactional
     @Override
     public Certificate update(Certificate certificate, Long id) throws ServiceException {
-        try {
             if (certificateDao.getById(id) == null)
                 throw new CertificateNotFoundException("Certificate was not found");
             final Certificate quantity = certificateDao.edit(certificate);
@@ -120,30 +95,19 @@ public class CertificateServiceImpl implements CertificateService {
             }
             certificate.setId(id);
             return certificateDao.edit(certificate);
-        } catch (DaoException e) {
-            throw new ServiceException(e);
-        }
     }
 
     @Override
     public List<Certificate> getCertificateByTag(Tag tag) throws ServiceException {
-        try {
              return certificateDao.getCertificateByTag(tag);
-        } catch (DaoException e) {
-            throw new ServiceException(e);
-        }
     }
 
     @Override
     public Certificate getByName(String name) throws ServiceException {
-        try {
             Certificate certificate = certificateDao.getByName(name);
             if(certificate == null) {
                 throw new CertificateNotFoundException("Certificate not found");
             }
             return certificateDao.getByName(name);
-        } catch (DaoException e) {
-            throw new ServiceException(e);
-        }
     }
 }

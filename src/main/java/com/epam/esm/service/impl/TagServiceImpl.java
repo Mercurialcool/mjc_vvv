@@ -54,7 +54,6 @@ public class TagServiceImpl implements TagService {
     @Transactional
     @Override
     public void delete(Tag tag, Long id) throws ServiceException, DaoException {
-        try {
             if(tagDao.getById(id) == null) {
                 throw new TagNotFoundException("Tag not found");
             }
@@ -66,34 +65,23 @@ public class TagServiceImpl implements TagService {
             tagDao.getById(id);
             tag.setId(id);
             tagDao.delete(tag);
-        } catch (DaoException e) {
-            throw new ServiceException(e);
-        }
     }
 
     @Override
     public Tag getByName(String name) throws DaoException {
-        try {
             Tag tag = tagDao.getByName(name);
             if (tag == null) {
                 throw new TagNotFoundException("Tag not found");
             }
             return tagDao.getByName(name);
-        } catch (DaoException e) {
-            throw new DaoException(e);
-        }
     }
 
     @Override
     public Tag getById(Long id) throws ServiceException {
-        try {
             Tag tag = tagDao.getById(id);
             if (tag == null) {
                 throw new TagNotFoundException("Tag not found");
             }
             return tagDao.getById(id);
-        } catch (DaoException e) {
-            throw new ServiceException(e);
-        }
     }
 }

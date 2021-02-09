@@ -1,7 +1,6 @@
 package com.epam.esm.controller;
 
 import com.epam.esm.model.Certificate;
-import com.epam.esm.model.Tag;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import com.epam.esm.service.CertificateService;
@@ -33,6 +32,10 @@ public class GiftCertificateController {
     @RequestMapping(method = RequestMethod.GET)
     public List<Certificate> getByParameters(@RequestParam(required = false) MultiValueMap<String, String> params) {
         try {
+            List<String> getSortParameter = params.get("sortByName");
+            if (!getSortParameter.isEmpty() && !getSortParameter.get(0).equals("DESC")
+                    && !getSortParameter.get(0).equals("ASC"))
+                throw new ServiceException("Wrong search query");
             return certificateService.getByParameters(params);
         } catch (ServiceException e) {
             logger.error(e);
@@ -75,11 +78,12 @@ public class GiftCertificateController {
     /**
      * Finds Certificate by ID
      * @param id An identifier to perform an operation by
+     * @return certificate
      */
     @RequestMapping(method = RequestMethod.GET, value = "/{id}")
-    public void getCertificateById(@PathVariable Long id) {
+    public Certificate getCertificate(@PathVariable Long id) {
         try {
-            certificateService.getById(id);
+            return certificateService.getById(id);
         } catch (ServiceException e) {
             logger.error(e);
             throw e;
@@ -96,22 +100,6 @@ public class GiftCertificateController {
     public Certificate updateCertificate(@RequestBody Certificate certificate, @PathVariable Long id) {
         try {
             return certificateService.update(certificate, id);
-        } catch (ServiceException e) {
-            logger.error(e);
-            throw e;
-        }
-    }
-
-    /**
-     * Gets Certificate by Tag
-     * @param tag Tag entity
-     * @return List of certificates according to tag request
-     */
-
-    @RequestMapping(path = "/getByTag", method = RequestMethod.GET)
-    public List<Certificate> getCertificateByTag(@RequestBody Tag tag) {
-        try {
-            return certificateService.getCertificateByTag(tag);
         } catch (ServiceException e) {
             logger.error(e);
             throw e;

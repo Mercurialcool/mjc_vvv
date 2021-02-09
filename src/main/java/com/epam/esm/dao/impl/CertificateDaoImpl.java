@@ -15,7 +15,6 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -41,7 +40,7 @@ public class CertificateDaoImpl implements CertificateDao {
     public static final String REMOVE_CERTIFICATE_CONSTRAINT = "DELETE FROM tag_has_gift_certificate WHERE gift_certificate_id = ?";
     public static final String GET_CERTIFICATES_BY_IDS = "SELECT * FROM gift_certificate WHERE id IN (?)";
     public static final String GET_CERTIFICATES_BY_TAG_ID = "SELECT gift_certificate_id FROM tag_has_gift_certificate WHERE tag_id = ?";
-    public static final String GET_TAGID_BY_CERTIFICATE = "SELECT tag_id FROM tag_has_gift_certificate WHERE gift_certificate_id = ?";
+    public static final String GET_TAG_ID_BY_CERTIFICATE = "SELECT tag_id FROM tag_has_gift_certificate WHERE gift_certificate_id = ?";
     public static final String ADD_NEW_TAG_CERTIFICATE = "INSERT INTO tag_has_gift_certificate (tag_id, gift_certificate_id) values(:tag_id,:gift_certificate_id)";
 
     @Autowired
@@ -59,7 +58,7 @@ public class CertificateDaoImpl implements CertificateDao {
     }
 
     private List<Long> getTagIdsByCertificateIds(Long certificateId){
-        return jdbcTemplate.query(GET_TAGID_BY_CERTIFICATE, new Object[] {certificateId},
+        return jdbcTemplate.query(GET_TAG_ID_BY_CERTIFICATE, new Object[] {certificateId},
                 (rs, rowNum) -> rs.getLong(1));
     }
     @Override
@@ -95,6 +94,12 @@ public class CertificateDaoImpl implements CertificateDao {
                     .append(" description LIKE '%")
                     .append(params.getFirst("description"))
                     .append("%'");
+        }
+
+        if (Optional.ofNullable(params.get("sortByName")).isPresent()) {
+            stringBuilder
+                    .append(" ORDER BY name ")
+                    .append(params.getFirst("sortByName"));
         }
 
          List<Certificate> certificateList = jdbcTemplate.query(stringBuilder.toString(), new RowMapCertificateProvider());
@@ -204,5 +209,7 @@ public class CertificateDaoImpl implements CertificateDao {
             c.setTags(tagList);
         }
         return certificates;
+
+
     }
 }

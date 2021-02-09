@@ -32,6 +32,10 @@ public class TagController {
     @RequestMapping(method = RequestMethod.GET)
     public List<Tag> getByParameters(@RequestParam(required = false) MultiValueMap<String, String> params) {
         try {
+            List<String> getSortParameter = params.get("sortByName");
+            if (!getSortParameter.isEmpty() && !getSortParameter.get(0).equals("ASC")
+                    && !getSortParameter.get(0).equals("DESC"))
+                throw new ServiceException("Wrong search query");
             return tagService.getByParameters(params);
         } catch (ServiceException e) {
             logger.error(e);
@@ -59,11 +63,12 @@ public class TagController {
     /**
      * Finds Tag by ID
      * @param id An identifier to perform an operation by
+     * @return Tag
      */
     @RequestMapping(method = RequestMethod.GET, value = "/{id}")
-    public void getCertificateById(@PathVariable Long id) {
+    public Tag getCertificateById(@PathVariable Long id) {
         try {
-            tagService.getById(id);
+            return tagService.getById(id);
         } catch (ServiceException e) {
             logger.error(e);
             throw e;
