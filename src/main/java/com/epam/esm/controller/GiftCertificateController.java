@@ -32,10 +32,6 @@ public class GiftCertificateController {
     @RequestMapping(method = RequestMethod.GET)
     public List<Certificate> getByParameters(@RequestParam(required = false) MultiValueMap<String, String> params) {
         try {
-            List<String> getSortParameter = params.get("sortByName");
-            if (!getSortParameter.isEmpty() && !getSortParameter.get(0).equals("DESC")
-                    && !getSortParameter.get(0).equals("ASC"))
-                throw new ServiceException("Wrong search query");
             return certificateService.getByParameters(params);
         } catch (ServiceException e) {
             logger.error(e);

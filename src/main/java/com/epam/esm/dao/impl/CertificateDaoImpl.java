@@ -166,12 +166,14 @@ public class CertificateDaoImpl implements CertificateDao {
         Optional.ofNullable(certificate.getPrice()).ifPresent(x-> stringBuilder.append(", price =:price"));
         Optional.ofNullable(certificate.getDuration()).ifPresent(x-> stringBuilder.append(", duration =:duration"));
         stringBuilder.append(" where id =:id");
-        for (Tag t: certificate.getTags()) {
-            Tag foundTag = tagDao.getByName(t.getName());
-            if (foundTag == null) {
-                foundTag = tagDao.add(t);
+        if (certificate.getTags() != null) {
+            for (Tag t : certificate.getTags()) {
+                Tag foundTag = tagDao.getByName(t.getName());
+                if (foundTag == null) {
+                    foundTag = tagDao.add(t);
+                }
+                t.setId(foundTag.getId());
             }
-            t.setId(foundTag.getId());
         }
         this.namedParameterJdbcTemplate.update(stringBuilder.toString(), paramSource);
         return certificate;

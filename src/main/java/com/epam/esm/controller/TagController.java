@@ -32,10 +32,6 @@ public class TagController {
     @RequestMapping(method = RequestMethod.GET)
     public List<Tag> getByParameters(@RequestParam(required = false) MultiValueMap<String, String> params) {
         try {
-            List<String> getSortParameter = params.get("sortByName");
-            if (!getSortParameter.isEmpty() && !getSortParameter.get(0).equals("ASC")
-                    && !getSortParameter.get(0).equals("DESC"))
-                throw new ServiceException("Wrong search query");
             return tagService.getByParameters(params);
         } catch (ServiceException e) {
             logger.error(e);
