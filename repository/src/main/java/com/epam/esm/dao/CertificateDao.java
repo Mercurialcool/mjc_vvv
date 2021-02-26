@@ -19,6 +19,7 @@ public interface CertificateDao extends CrudDao<Certificate> {
      * @throws DaoException
      */
         List<Certificate> getCertificateByTag(Tag tag) throws DaoException;
-    }
+
+}
 
 

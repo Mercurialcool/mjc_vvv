@@ -1,5 +1,6 @@
 package com.epam.esm.service.impl;
 
+import com.epam.esm.dao.SearchQuery;
 import com.epam.esm.dao.TagDao;
 import com.epam.esm.dao.exception.DaoException;
 import com.epam.esm.model.Certificate;
@@ -14,6 +15,7 @@ import com.epam.esm.service.exception.tag.TagNotFoundException;
 import com.epam.esm.service.exception.tag.UnableToDeleteTagException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -34,11 +36,11 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public List<TagDto> getByParameters(MultiValueMap<String, String> params) throws DaoException {
+    public List<TagDto> getByParameters(SearchQuery searchQuery) throws DaoException {
         try {
-            if (CollectionUtils.isEmpty(params))
+            if (searchQuery.getName() == null && searchQuery.getDescription() == null && searchQuery.getTags().isEmpty())
                 return tagConverter.objectDtoList(tagDao.getAll());
-            return tagConverter.objectDtoList(tagDao.getByParameters(params));
+            return tagConverter.objectDtoList(tagDao.getByParameters(searchQuery));
         } catch (DataAccessException e) {
             throw new DaoException(e);
         }

@@ -1,7 +1,6 @@
 package com.epam.esm.dao.impl;
 
-import com.epam.esm.dao.RowMapTagProvider;
-import com.epam.esm.dao.TagDao;
+import com.epam.esm.dao.*;
 import com.epam.esm.dao.exception.DaoException;
 import com.epam.esm.model.Certificate;
 import com.epam.esm.dao.exception.tag.DaoTagNotFoundException;
@@ -53,21 +52,21 @@ public class TagDaoImpl implements TagDao, RowMapper<Tag> {
     }
 
     @Override
-    public List<Tag> getByParameters(MultiValueMap<String, String> params) throws DaoException {
-        if (CollectionUtils.isEmpty(params))
+    public List<Tag> getByParameters(SearchQuery searchQuery) throws DaoException {
+        if (searchQuery.getName() == null)
             throw new DaoException();
         final StringBuilder stringBuilder = new StringBuilder("SELECT * FROM tag WHERE ");
-        if (Optional.ofNullable(params.get("name")).isPresent()) {
+        if (Optional.ofNullable(searchQuery.getName()).isPresent()) {
             stringBuilder
                     .append(" name LIKE '%")
-                    .append(params.getFirst("name"))
+                    .append(searchQuery.getName())
                     .append("%'");
         }
 
-        if (Optional.ofNullable(params.get("sortByName")).isPresent()) {
+        if (Optional.ofNullable(searchQuery.getSortByName()).isPresent()) {
             stringBuilder
                     .append(" ORDER BY name ")
-                    .append(params.getFirst("sortByName"));
+                    .append(searchQuery.getSortByName());
         }
 
         List<Tag> tagList = jdbcTemplate.query(stringBuilder.toString(), new RowMapTagProvider());

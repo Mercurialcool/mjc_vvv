@@ -10,24 +10,27 @@ import java.util.Set;
 @Table(name = "orders")
 @Inheritance(strategy = InheritanceType.JOINED)
 public class Order extends com.epam.esm.model.Entity implements Serializable {
-        private static final long serialVersionUID = -519531229783607916L;
+    private static final long serialVersionUID = -519531229783607916L;
 
-        @Column(name = "date_of_issue", columnDefinition = "TIMESTAMP")
-        private Instant dateOfIssue;
-        @Column(name = "quantity")
-        private float quantity;
+    @Column(name = "date_of_issue", columnDefinition = "TIMESTAMP")
+    private Instant dateOfIssue;
+    @Column(name = "quantity")
+    private Float quantity;
 
-        @ManyToOne
-        @JoinColumn(name = "user_id")
-        private User user;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
-        @ManyToMany
-        @JoinTable(name = "orders_certificates",
-                joinColumns = @JoinColumn(name = "order_id"),
-                inverseJoinColumns = @JoinColumn(name = "gift_certificate_id"))
-        private Set<Certificate> certificates;
+    @OneToMany(mappedBy = "order")
+    private Set<OrderCondition> orderConditions;
 
     public Order() {
+    }
+
+    public Order(Instant dateOfIssue, float quantity, User user) {
+        this.dateOfIssue = dateOfIssue;
+        this.quantity = quantity;
+        this.user = user;
     }
 
     public Instant getDateOfIssue() {
@@ -38,11 +41,11 @@ public class Order extends com.epam.esm.model.Entity implements Serializable {
         this.dateOfIssue = dateOfIssue;
     }
 
-    public float getQuantity() {
+    public Float getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(float quantity) {
+    public void setQuantity(Float quantity) {
         this.quantity = quantity;
     }
 
@@ -54,12 +57,12 @@ public class Order extends com.epam.esm.model.Entity implements Serializable {
         this.user = user;
     }
 
-    public Set<Certificate> getCertificates() {
-        return certificates;
+    public Set<OrderCondition> getOrderConditions() {
+        return orderConditions;
     }
 
-    public void setCertificates(Set<Certificate> certificates) {
-        this.certificates = certificates;
+    public void setOrderConditions(Set<OrderCondition> orderConditions) {
+        this.orderConditions = orderConditions;
     }
 
     @Override
@@ -70,19 +73,19 @@ public class Order extends com.epam.esm.model.Entity implements Serializable {
 
         Order order = (Order) o;
 
-        if (Float.compare(order.quantity, quantity) != 0) return false;
         if (dateOfIssue != null ? !dateOfIssue.equals(order.dateOfIssue) : order.dateOfIssue != null) return false;
+        if (quantity != null ? !quantity.equals(order.quantity) : order.quantity != null) return false;
         if (user != null ? !user.equals(order.user) : order.user != null) return false;
-        return certificates != null ? certificates.equals(order.certificates) : order.certificates == null;
+        return orderConditions != null ? orderConditions.equals(order.orderConditions) : order.orderConditions == null;
     }
 
     @Override
     public int hashCode() {
         int result = super.hashCode();
         result = 31 * result + (dateOfIssue != null ? dateOfIssue.hashCode() : 0);
-        result = 31 * result + (quantity != +0.0f ? Float.floatToIntBits(quantity) : 0);
+        result = 31 * result + (quantity != null ? quantity.hashCode() : 0);
         result = 31 * result + (user != null ? user.hashCode() : 0);
-        result = 31 * result + (certificates != null ? certificates.hashCode() : 0);
+        result = 31 * result + (orderConditions != null ? orderConditions.hashCode() : 0);
         return result;
     }
 
@@ -92,7 +95,7 @@ public class Order extends com.epam.esm.model.Entity implements Serializable {
         sb.append("dateOfIssue=").append(dateOfIssue);
         sb.append(", quantity=").append(quantity);
         sb.append(", user=").append(user);
-        sb.append(", certificates=").append(certificates);
+        sb.append(", orderConditions=").append(orderConditions);
         sb.append('}');
         return sb.toString();
     }

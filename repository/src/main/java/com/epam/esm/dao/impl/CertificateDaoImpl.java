@@ -36,11 +36,11 @@ public class CertificateDaoImpl implements CertificateDao {
     public static final String GET_CERTIFICATE_BY_NAME = "SELECT * FROM gift_certificate WHERE name = ?";
     public static final String ADD_NEW_CERTIFICATE = "INSERT INTO gift_certificate (name,description,price,duration,create_date,last_update_date) values(:name,:description,:price,:duration,:createDateTime,:lastUpdatedTime)";
     public static final String REMOVE_CERTIFICATE = "DELETE FROM gift_certificate WHERE id = ? ";
-    public static final String REMOVE_CERTIFICATE_CONSTRAINT = "DELETE FROM tag_has_gift_certificate WHERE gift_certificate_id = ?";
+    public static final String REMOVE_CERTIFICATE_CONSTRAINT = "DELETE FROM certificates_tags WHERE gift_certificate_id = ?";
     public static final String GET_CERTIFICATES_BY_IDS = "SELECT * FROM gift_certificate WHERE id IN (?)";
-    public static final String GET_CERTIFICATES_BY_TAG_ID = "SELECT gift_certificate_id FROM tag_has_gift_certificate WHERE tag_id = ?";
-    public static final String GET_TAG_ID_BY_CERTIFICATE = "SELECT tag_id FROM tag_has_gift_certificate WHERE gift_certificate_id = ?";
-    public static final String ADD_NEW_TAG_CERTIFICATE = "INSERT INTO tag_has_gift_certificate (tag_id, gift_certificate_id) values(:tag_id,:gift_certificate_id)";
+    public static final String GET_CERTIFICATES_BY_TAG_ID = "SELECT gift_certificate_id FROM certificates_tags WHERE tag_id = ?";
+    public static final String GET_TAG_ID_BY_CERTIFICATE = "SELECT tag_id FROM certificates_tags WHERE gift_certificate_id = ?";
+    public static final String ADD_NEW_TAG_CERTIFICATE = "INSERT INTO certificates_tags (tag_id, gift_certificate_id) values(:tag_id,:gift_certificate_id)";
 
     private JdbcTemplate jdbcTemplate;
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
@@ -74,33 +74,37 @@ public class CertificateDaoImpl implements CertificateDao {
     }
 
     @Override
-    public List<Certificate> getByParameters(MultiValueMap<String, String> params) throws DaoException {
-        if (CollectionUtils.isEmpty(params))
+    public List<Certificate> getByParameters(SearchQuery searchQuery) throws DaoException {
+        if (searchQuery.getName() == null && searchQuery.getDescription() == null && searchQuery.getTags().isEmpty())
             throw new DaoException();
         final StringBuilder stringBuilder = new StringBuilder("SELECT * FROM gift_certificate WHERE ");
 
-        if (Optional.ofNullable(params.get("name")).isPresent()) {
+        if (Optional.ofNullable(searchQuery.getName()).isPresent()) {
             stringBuilder
                     .append(" name LIKE '%")
-                    .append(params.getFirst("name"))
+                    .append(searchQuery.getName())
                     .append("%'");
         }
 
-        if (Optional.ofNullable(params.get("name")).isPresent() && Optional.ofNullable(params.get("description")).isPresent()) {
+        if (Optional.ofNullable(searchQuery.getName()).isPresent() && Optional.ofNullable(searchQuery.getDescription()).isPresent()) {
                 stringBuilder.append(" and ");
             }
 
-        if (Optional.ofNullable(params.get("description")).isPresent()) {
+        if (Optional.ofNullable(searchQuery.getDescription()).isPresent()) {
             stringBuilder
                     .append(" description LIKE '%")
-                    .append(params.getFirst("description"))
+                    .append(searchQuery.getDescription())
                     .append("%'");
         }
 
-        if (Optional.ofNullable(params.get("sortByName")).isPresent()) {
+        if (Optional.ofNullable(searchQuery.getTags()).isPresent()) {
+            stringBuilder.append(" and ");
+        }
+
+        if (Optional.ofNullable(searchQuery.getSortByName()).isPresent()) {
             stringBuilder
                     .append(" ORDER BY name ")
-                    .append(params.getFirst("sortByName"));
+                    .append(searchQuery.getSortByName());
         }
 
          List<Certificate> certificateList = jdbcTemplate.query(stringBuilder.toString(), new RowMapCertificateProvider());

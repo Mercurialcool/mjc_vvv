@@ -21,14 +21,6 @@ public interface CrudDao<T> {
     List<T> getAll() throws DaoException;
 
     /**
-     * Searches Certificate/Tag with a part of name/description(Certificate) or name(Tag)
-     * @param params Map of parameters
-     * @return list, according to query
-     * @throws DaoException
-     */
-    List<T> getByParameters(MultiValueMap<String, String> params) throws DaoException;
-
-    /**
      * Creates new Certificate/Tag
      * @param t generic parameter
      * @return object, according to type
@@ -43,6 +35,14 @@ public interface CrudDao<T> {
      * @return
      */
     Certificate delete(T t) throws DaoException;
+
+    /**
+     * Searches Certificate/Tag with a part of name/description(Certificate) or name(Tag)
+     * @param searchQuery Map of parameters
+     * @return list, according to query
+     * @throws DaoException
+     */
+    List<T> getByParameters(SearchQuery searchQuery) throws DaoException;
 
     /**
      * Updates Certificate/Tag with given field changes

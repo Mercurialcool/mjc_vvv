@@ -22,14 +22,18 @@ import java.util.Optional;
 @Repository
 public class UserDaoImpl implements UserDao {
 
-    @Autowired
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
-
-    @Autowired
     private JdbcTemplate jdbcTemplate;
+    private CustomRepository customRepository;
 
     @Autowired
-    private CustomRepository<User> customRepository;
+    public UserDaoImpl(NamedParameterJdbcTemplate namedParameterJdbcTemplate,
+                       JdbcTemplate jdbcTemplate,
+                       CustomRepository customRepository) {
+        this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
+        this.jdbcTemplate = jdbcTemplate;
+        this.customRepository = customRepository;
+    }
 
     public static final String GET_ALL_USERS = "SELECT * FROM users";
     public static final String GET_USER_BY_NAME = "SELECT * FROM users WHERE name = ?";

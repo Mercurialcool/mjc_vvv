@@ -1,5 +1,6 @@
 package com.epam.esm.controller;
 
+import com.epam.esm.dao.SearchQuery;
 import com.epam.esm.dao.exception.DaoException;
 import com.epam.esm.model.Tag;
 import com.epam.esm.service.TagService;
@@ -8,6 +9,7 @@ import com.epam.esm.service.exception.ServiceException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.util.MultiValueMap;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -25,15 +27,15 @@ public class TagController {
 
     /**
      * Gets all tags
-     * @param params MVM of strings to get all tags
+     * @param searchQuery MVM of strings to get all tags
      * @return List of tags
      * @throws DaoException
      */
 
     @RequestMapping(method = RequestMethod.GET)
-    public List<TagDto> getByParameters(@RequestParam(required = false) MultiValueMap<String, String> params) {
+    public List<TagDto> getByParameters(@RequestParam(required = false)SearchQuery searchQuery) {
         try {
-            return tagService.getByParameters(params);
+            return tagService.getByParameters(searchQuery);
         } catch (ServiceException e) {
             logger.error(e);
             throw e;
@@ -63,7 +65,7 @@ public class TagController {
      * @return Tag
      */
     @RequestMapping(method = RequestMethod.GET, value = "/{id}")
-    public TagDto getCertificateById(@PathVariable Long id) {
+    public TagDto getById(@PathVariable Long id) {
         try {
             return tagService.getById(id);
         } catch (ServiceException e) {

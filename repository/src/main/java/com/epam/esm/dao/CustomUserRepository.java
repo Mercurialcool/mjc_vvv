@@ -1,0 +1,10 @@
+package com.epam.esm.dao;
+
+import com.epam.esm.model.Order;
+import com.epam.esm.model.User;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.PagingAndSortingRepository;
+
+public interface CustomUserRepository extends PagingAndSortingRepository<User, Long> {
+
+}

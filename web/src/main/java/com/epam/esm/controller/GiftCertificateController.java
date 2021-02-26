@@ -1,12 +1,15 @@
 package com.epam.esm.controller;
 
+import com.epam.esm.dao.SearchQuery;
 import com.epam.esm.model.Certificate;
+import com.epam.esm.model.Tag;
 import com.epam.esm.service.dto.CertificateDto;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import com.epam.esm.service.CertificateService;
 import com.epam.esm.service.exception.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.util.MultiValueMap;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -31,9 +34,12 @@ public class GiftCertificateController {
      */
 
     @RequestMapping(method = RequestMethod.GET)
-    public List<CertificateDto> getByParameters(@RequestParam(required = false) MultiValueMap<String, String> params) {
+    public List<CertificateDto> getByParameters(@RequestParam(required = false)
+                                                SearchQuery searchQuery) {
         try {
-            return certificateService.getByParameters(params);
+            if(searchQuery == null)
+                searchQuery = new SearchQuery();
+            return certificateService.getByParameters(searchQuery);
         } catch (ServiceException e) {
             logger.error(e);
             throw e;
@@ -102,4 +108,5 @@ public class GiftCertificateController {
             throw e;
         }
     }
+
 }

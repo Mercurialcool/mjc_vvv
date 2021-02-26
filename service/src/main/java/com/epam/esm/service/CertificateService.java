@@ -14,7 +14,7 @@ public interface CertificateService extends CrudService<CertificateDto> {
 
     /**
      * Updates Certificate at a service layer
-     * @param certificate Object
+     * @param certificateDto Object
      * @param id ID of a certificate
      * @throws ServiceException
      */

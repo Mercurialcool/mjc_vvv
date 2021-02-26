@@ -1,6 +1,8 @@
 package com.epam.esm.service.impl;
 
 import com.epam.esm.dao.CertificateDao;
+import com.epam.esm.dao.CustomCertificateRepository;
+import com.epam.esm.dao.SearchQuery;
 import com.epam.esm.dao.TagDao;
 import com.epam.esm.dao.exception.DaoException;
 import com.epam.esm.model.Certificate;
@@ -13,11 +15,14 @@ import com.epam.esm.service.exception.ServiceException;
 import com.epam.esm.service.exception.certificate.CertificateAlreadyExistsException;
 import com.epam.esm.service.exception.certificate.CertificateNotFoundException;
 import com.epam.esm.service.exception.certificate.UnableToDeleteCertificateException;
+import com.epam.esm.service.utils.SearchQueryUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.MultiValueMap;
+import org.springframework.data.domain.Page;
 
 
 import java.util.List;
@@ -30,26 +35,31 @@ public class CertificateServiceImpl implements CertificateService {
     private TagDao tagDao;
     private Converter<Certificate, CertificateDto> certificateConverter;
     private Converter<Tag, TagDto> tagConverter;
+    private CustomCertificateRepository customCertificateRepository;
 
     @Autowired
     public CertificateServiceImpl(CertificateDao certificateDao,
                                   TagDao tagDao,
                                   Converter<Certificate, CertificateDto> certificateConverter,
-                                  Converter<Tag, TagDto> tagConverter) {
+                                  Converter<Tag, TagDto> tagConverter,
+                                  CustomCertificateRepository customCertificateRepository) {
         this.certificateDao = certificateDao;
         this.tagDao = tagDao;
         this.certificateConverter = certificateConverter;
         this.tagConverter = tagConverter;
+        this.customCertificateRepository = customCertificateRepository;
     }
 
     public CertificateServiceImpl() {
     }
 
     @Override
-    public List<CertificateDto> getByParameters(MultiValueMap<String, String> params) throws ServiceException {
-            if (CollectionUtils.isEmpty(params))
-                return certificateConverter.objectDtoList(certificateDao.getAll());
-            return certificateConverter.objectDtoList(certificateDao.getByParameters(params));
+    public List<CertificateDto> getByParameters(SearchQuery searchQuery) throws ServiceException {
+        return certificateConverter.objectDtoList(
+                customCertificateRepository.findAllCertificatesByDescriptionContainingAndNameContaining(
+                        searchQuery.getDescription(),
+                        searchQuery.getName(),
+                        SearchQueryUtil.getPage(searchQuery)).toList());
     }
 
     @Transactional

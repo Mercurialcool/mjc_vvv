@@ -1,7 +1,9 @@
 package com.epam.esm.service;
 
+import com.epam.esm.dao.SearchQuery;
 import com.epam.esm.dao.exception.DaoException;
 import com.epam.esm.service.exception.ServiceException;
+import org.springframework.data.domain.Pageable;
 import org.springframework.util.MultiValueMap;
 
 import java.util.List;
@@ -19,7 +21,7 @@ public interface CrudService<T> {
      * @throws ServiceException
      * @throws DaoException
      */
-    List<T> getByParameters(MultiValueMap<String, String> params) throws ServiceException, DaoException;
+    List<T> getByParameters(SearchQuery searchQuery) throws ServiceException, DaoException;
 
     /**
      * Checks Certificate/Tag at null and adds new Certificate/Tag at a service layer

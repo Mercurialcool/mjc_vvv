@@ -5,6 +5,7 @@ import com.epam.esm.dao.exception.DaoException;
 import com.epam.esm.model.Certificate;
 import com.epam.esm.model.Order;
 import com.epam.esm.model.Tag;
+import com.epam.esm.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -27,22 +28,24 @@ import static com.epam.esm.dao.RowMapOrderProvider.*;
 @Repository
 public class OrderDaoImpl implements OrderDao, RowMapper<Order> {
 
-    public static final String GET_ALL_ORDERS = "SELECT * FROM orders";
     public static final String GET_ORDER_BY_ID = "SELECT * FROM orders WHERE id = ?";
     public static final String ADD_NEW_ORDER = "INSERT INTO orders (date_of_issue,quantity) values(:date_of_issue,:quantity)";
     public static final String GET_BY_USER = "SELECT * FROM orders WHERE id = ?";//todo fix
 
-    @Autowired
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+    private JdbcTemplate jdbcTemplate;
 
     @Autowired
-    private JdbcTemplate jdbcTemplate;
+    public OrderDaoImpl(NamedParameterJdbcTemplate namedParameterJdbcTemplate,
+                        JdbcTemplate jdbcTemplate) {
+        this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
+        this.jdbcTemplate = jdbcTemplate;
+    }
 
     @Override
     public List<Order> getAll() throws DaoException {
-        return jdbcTemplate.query(GET_ALL_ORDERS, new OrderDaoImpl());
+        return null;
     }
-
 
     @Override
     public Order add(Order order) throws DaoException {
@@ -74,7 +77,7 @@ public class OrderDaoImpl implements OrderDao, RowMapper<Order> {
         order.setId(resultSet.getLong(PROVIDER_ID));
         order.setDateOfIssue(resultSet.getTimestamp(PROVIDER_CREATE_DATE) == null ? null : resultSet.getTimestamp(PROVIDER_CREATE_DATE).toInstant());
         order.setQuantity(resultSet.getFloat(PROVIDER_QUANTITY));
-        //order.setUser(resultSet.get(PROVIDER_USER_ID));//todo ask
+        order.setUser(resultSet.getObject(PROVIDER_USER_ID, User.class));//todo ask
         return order;
     }
 }
