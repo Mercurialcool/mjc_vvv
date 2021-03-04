@@ -1,5 +1,6 @@
 package com.epam.esm.dao.impl;
 
+import com.epam.esm.dao.CombinedSqlParameterSource;
 import com.epam.esm.dao.OrderDao;
 import com.epam.esm.dao.exception.DaoException;
 import com.epam.esm.model.Certificate;
@@ -21,6 +22,7 @@ import org.springframework.util.MultiValueMap;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.List;
 
 import static com.epam.esm.dao.RowMapOrderProvider.*;
@@ -51,9 +53,13 @@ public class OrderDaoImpl implements OrderDao, RowMapper<Order> {
     public Order add(Order order) throws DaoException {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         try {
-            final BeanPropertySqlParameterSource paramSource = new BeanPropertySqlParameterSource(order);
-            namedParameterJdbcTemplate.update(ADD_NEW_ORDER, paramSource, keyHolder, new String[]{"id"});
-            order.setId(keyHolder.getKey().longValue());
+                final CombinedSqlParameterSource parameterSource = new CombinedSqlParameterSource(order);
+                parameterSource.addValue("dateOfIssue", Timestamp.from(order.getDateOfIssue()));
+                namedParameterJdbcTemplate.update(ADD_NEW_ORDER, parameterSource ,keyHolder, new String[]{"id"});
+                order.setId(keyHolder.getKey().longValue());
+//            final BeanPropertySqlParameterSource paramSource = new BeanPropertySqlParameterSource(order);
+//            namedParameterJdbcTemplate.update(ADD_NEW_ORDER, paramSource, keyHolder, new String[]{"id"});
+//            order.setId(keyHolder.getKey().longValue());
         }
         catch (DataAccessException e){
             throw new DaoException(e);

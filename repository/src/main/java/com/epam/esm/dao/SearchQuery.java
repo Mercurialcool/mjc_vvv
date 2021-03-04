@@ -1,10 +1,13 @@
 package com.epam.esm.dao;
 
 import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Component;
+
 import javax.management.StandardEmitterMBean;
 
 import java.util.List;
 
+@Component
 public class SearchQuery {
 
     private int page;

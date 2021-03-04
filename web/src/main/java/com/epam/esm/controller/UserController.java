@@ -31,23 +31,6 @@ public class UserController {
         this.orderService = orderService;
     }
 
-//    @Autowired
-//    private AlbumModelAssembler albumModelAssembler;
-//
-//    @Autowired
-//    private PagedResourcesAssembler<AlbumEntity> pagedResourcesAssembler;
-//
-//    @GetMapping("/api/albums-list")
-//    public ResponseEntity<PagedModel<AlbumModel>> getAllAlbums(Pageable pageable)
-//    {
-//        Page<AlbumEntity> albumEntities = albumRepository.findAll(pageable);
-//
-//        PagedModel<AlbumModel> collModel = pagedResourcesAssembler
-//                .toModel(albumEntities, albumModelAssembler);
-//
-//        return new ResponseEntity<>(collModel,HttpStatus.OK);
-//    }
-
     @RequestMapping(method = RequestMethod.GET)
     public List<UserDto> getAll(SearchQuery searchQuery) {
         try {

@@ -33,7 +33,7 @@ public class TagController {
      */
 
     @RequestMapping(method = RequestMethod.GET)
-    public List<TagDto> getByParameters(@RequestParam(required = false)SearchQuery searchQuery) {
+    public List<TagDto> getByParameters(SearchQuery searchQuery) {
         try {
             return tagService.getByParameters(searchQuery);
         } catch (ServiceException e) {

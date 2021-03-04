@@ -60,6 +60,5 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<UserDto> getAll(SearchQuery searchQuery) throws ServiceException, DaoException {
         return userConverter.objectDtoList(customUserRepository.findAll(SearchQueryUtil.getPage(searchQuery)).toList());
-        //return userConverter.objectDtoList(userDao.getAll());
     }
 }

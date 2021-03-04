@@ -28,17 +28,14 @@ public class GiftCertificateController {
     }
 
     /**
-     * Extracts MultiValueMap to get proper parameters for search query
+     * Extracts search query to get a list of certificates
      * @param
      * @return List of Certificate type
      */
 
     @RequestMapping(method = RequestMethod.GET)
-    public List<CertificateDto> getByParameters(@RequestParam(required = false)
-                                                SearchQuery searchQuery) {
+    public List<CertificateDto> getByParameters(SearchQuery searchQuery) {
         try {
-            if(searchQuery == null)
-                searchQuery = new SearchQuery();
             return certificateService.getByParameters(searchQuery);
         } catch (ServiceException e) {
             logger.error(e);

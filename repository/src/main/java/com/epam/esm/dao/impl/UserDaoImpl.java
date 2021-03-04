@@ -1,5 +1,6 @@
 package com.epam.esm.dao.impl;
 
+import com.epam.esm.dao.CombinedSqlParameterSource;
 import com.epam.esm.dao.CustomRepository;
 import com.epam.esm.dao.RowMapUserProvider;
 import com.epam.esm.dao.UserDao;
@@ -16,6 +17,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
 
@@ -68,9 +70,12 @@ public class UserDaoImpl implements UserDao {
     public User create(User user) throws DaoException {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         try {
-            final BeanPropertySqlParameterSource paramSource = new BeanPropertySqlParameterSource(user);
-            namedParameterJdbcTemplate.update(ADD_NEW_USER, paramSource, keyHolder, new String[]{"id"});
+            final CombinedSqlParameterSource parameterSource = new CombinedSqlParameterSource(user);
+            namedParameterJdbcTemplate.update(ADD_NEW_USER, parameterSource, keyHolder, new String[]{"id"});
             user.setId(keyHolder.getKey().longValue());
+//            final BeanPropertySqlParameterSource paramSource = new BeanPropertySqlParameterSource(user);
+//            namedParameterJdbcTemplate.update(ADD_NEW_USER, paramSource, keyHolder, new String[]{"id"});
+//            user.setId(keyHolder.getKey().longValue());
         }
         catch (DataAccessException e){
             throw new DaoException(e);

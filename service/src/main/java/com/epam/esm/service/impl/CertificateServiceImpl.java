@@ -1,9 +1,6 @@
 package com.epam.esm.service.impl;
 
-import com.epam.esm.dao.CertificateDao;
-import com.epam.esm.dao.CustomCertificateRepository;
-import com.epam.esm.dao.SearchQuery;
-import com.epam.esm.dao.TagDao;
+import com.epam.esm.dao.*;
 import com.epam.esm.dao.exception.DaoException;
 import com.epam.esm.model.Certificate;
 import com.epam.esm.model.Tag;
@@ -55,11 +52,9 @@ public class CertificateServiceImpl implements CertificateService {
 
     @Override
     public List<CertificateDto> getByParameters(SearchQuery searchQuery) throws ServiceException {
+        Pageable pageable = SearchQueryUtil.getPage(searchQuery);
         return certificateConverter.objectDtoList(
-                customCertificateRepository.findAllCertificatesByDescriptionContainingAndNameContaining(
-                        searchQuery.getDescription(),
-                        searchQuery.getName(),
-                        SearchQueryUtil.getPage(searchQuery)).toList());
+                customCertificateRepository.findAll(new CertificateSpecification<>(searchQuery), pageable).toList());
     }
 
     @Transactional

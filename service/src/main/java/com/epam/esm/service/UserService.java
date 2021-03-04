@@ -12,7 +12,7 @@ public interface UserService {
 
     /**
      * Finds list of users
-     * @param pageable
+     * @param searchQuery
      * @return list of users
      * @throws ServiceException
      */
