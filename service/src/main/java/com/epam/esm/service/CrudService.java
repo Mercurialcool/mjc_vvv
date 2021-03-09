@@ -16,7 +16,7 @@ import java.util.List;
 public interface CrudService<T> {
     /**
      * Gets Certificate/Tag by part of name/description at a service layer
-     * @param params Parameters to search by
+     * @param searchQuery Parameters to search by
      * @return List of Certificates/Tags
      * @throws ServiceException
      * @throws DaoException

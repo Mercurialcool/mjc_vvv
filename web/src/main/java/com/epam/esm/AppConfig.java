@@ -11,7 +11,7 @@ import org.springframework.context.support.ResourceBundleMessageSource;
 import java.util.Locale;
 
 
-@SpringBootApplication(scanBasePackages = "com.epam.esm.controller")
+@SpringBootApplication(scanBasePackages = "com.epam.esm")
 @Import({ServiceConfig.class})
 public class AppConfig {
     public static void main(String[] args) {
@@ -26,5 +26,4 @@ public class AppConfig {
         messageSource.setDefaultLocale(Locale.ENGLISH);
         return messageSource;
     }
-
 }

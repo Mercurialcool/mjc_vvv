@@ -1,26 +1,29 @@
 package com.epam.esm.controller;
 
 import com.epam.esm.dao.SearchQuery;
-import com.epam.esm.model.Certificate;
-import com.epam.esm.model.Tag;
 import com.epam.esm.service.dto.CertificateDto;
+import com.epam.esm.util.impl.CertificateHateoasBuilder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import com.epam.esm.service.CertificateService;
 import com.epam.esm.service.exception.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Pageable;
-import org.springframework.util.MultiValueMap;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
 @RequestMapping("/certificates")
 public class GiftCertificateController {
+
     private static final Logger logger = LogManager.getLogger(GiftCertificateController.class);
     private CertificateService certificateService;
+
+    @Autowired
+    private CertificateHateoasBuilder certificateHateoasBuilder;
 
     @Autowired
     public GiftCertificateController(CertificateService certificateService) {
@@ -35,12 +38,9 @@ public class GiftCertificateController {
 
     @RequestMapping(method = RequestMethod.GET)
     public List<CertificateDto> getByParameters(SearchQuery searchQuery) {
-        try {
-            return certificateService.getByParameters(searchQuery);
-        } catch (ServiceException e) {
-            logger.error(e);
-            throw e;
-        }
+        List<CertificateDto> list = certificateService.getByParameters(searchQuery);
+        certificateHateoasBuilder.buildToEntitiesCollection(list);
+        return list;
     }
 
     /**
@@ -82,12 +82,9 @@ public class GiftCertificateController {
      */
     @RequestMapping(method = RequestMethod.GET, value = "/{id}")
     public CertificateDto getCertificate(@PathVariable Long id) {
-        try {
-            return certificateService.getById(id);
-        } catch (ServiceException e) {
-            logger.error(e);
-            throw e;
-        }
+        CertificateDto certificateDto = certificateService.getById(id);
+        certificateHateoasBuilder.buildForMainEntity(certificateDto);
+        return certificateDto;
     }
 
     /**
@@ -105,5 +102,4 @@ public class GiftCertificateController {
             throw e;
         }
     }
-
 }

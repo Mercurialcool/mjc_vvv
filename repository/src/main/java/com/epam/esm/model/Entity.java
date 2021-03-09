@@ -1,9 +1,11 @@
 package com.epam.esm.model;
 
+import org.springframework.hateoas.RepresentationModel;
+
 import javax.persistence.*;
 
 @MappedSuperclass
-public abstract class Entity {
+public abstract class Entity<T> {
 
     @Id
     @Column(name = "id")

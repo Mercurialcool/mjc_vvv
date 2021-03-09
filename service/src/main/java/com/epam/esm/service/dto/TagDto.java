@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonRootName;
 import java.io.Serializable;
 
 @JsonRootName(value = "tag")
-public class TagDto extends EntityDto implements Serializable {
+public class TagDto extends EntityDto<Long, TagDto> implements Serializable {
 
     private String name;
 

@@ -4,8 +4,11 @@ import com.epam.esm.dao.SearchQuery;
 import com.epam.esm.dao.exception.DaoException;
 import com.epam.esm.model.Tag;
 import com.epam.esm.service.TagService;
+import com.epam.esm.service.dto.CertificateDto;
 import com.epam.esm.service.dto.TagDto;
 import com.epam.esm.service.exception.ServiceException;
+import com.epam.esm.util.impl.CertificateHateoasBuilder;
+import com.epam.esm.util.impl.TagHateoasBuilder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +24,8 @@ import java.util.List;
 public class TagController {
     private static final Logger logger = LogManager.getLogger(TagController.class);
 
+    @Autowired
+    private TagHateoasBuilder tagHateoasBuilder;
 
     @Autowired
     private TagService tagService;
@@ -34,12 +39,9 @@ public class TagController {
 
     @RequestMapping(method = RequestMethod.GET)
     public List<TagDto> getByParameters(SearchQuery searchQuery) {
-        try {
-            return tagService.getByParameters(searchQuery);
-        } catch (ServiceException e) {
-            logger.error(e);
-            throw e;
-        }
+        List<TagDto> list = tagService.getByParameters(searchQuery);
+        tagHateoasBuilder.buildToEntitiesCollection(list);
+        return list;
     }
 
     /**
@@ -66,12 +68,9 @@ public class TagController {
      */
     @RequestMapping(method = RequestMethod.GET, value = "/{id}")
     public TagDto getById(@PathVariable Long id) {
-        try {
-            return tagService.getById(id);
-        } catch (ServiceException e) {
-            logger.error(e);
-            throw e;
-        }
+        TagDto tagDto = tagService.getById(id);
+        tagHateoasBuilder.buildForMainEntity(tagDto);
+        return tagDto;
     }
 
     /**

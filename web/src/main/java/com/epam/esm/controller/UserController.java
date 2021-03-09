@@ -8,6 +8,8 @@ import com.epam.esm.service.UserService;
 import com.epam.esm.service.dto.OrderDto;
 import com.epam.esm.service.dto.UserDto;
 import com.epam.esm.service.exception.ServiceException;
+import com.epam.esm.util.impl.OrderHateoasBuilder;
+import com.epam.esm.util.impl.UserHateoasBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.hateoas.CollectionModel;
@@ -25,6 +27,12 @@ public class UserController {
     private OrderService orderService;
 
     @Autowired
+    UserHateoasBuilder userHateoasBuilder;
+
+    @Autowired
+    OrderHateoasBuilder orderHateoasBuilder;
+
+    @Autowired
     public UserController(UserService userService,
                           OrderService orderService) {
         this.userService = userService;
@@ -33,16 +41,16 @@ public class UserController {
 
     @RequestMapping(method = RequestMethod.GET)
     public List<UserDto> getAll(SearchQuery searchQuery) {
-        try {
-            return userService.getAll(searchQuery);
-        } catch (ServiceException e) {
-            throw e;
-        }
+        List<UserDto> users = userService.getAll(searchQuery);
+        userHateoasBuilder.buildToEntitiesCollection(users);
+        return users;
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/{id}")
     public UserDto getUser(@PathVariable Long id) {
-            return userService.getById(id);
+        UserDto userDto = userService.getById(id);
+        userHateoasBuilder.buildForMainEntity(userDto);
+        return userDto;
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/{id}/orders")
@@ -54,12 +62,14 @@ public class UserController {
     @RequestMapping(method = RequestMethod.GET, value = "/{id}/orders")
     public List<OrderDto> findOrders(@PathVariable Long id, SearchQuery searchQuery) {
         List<OrderDto> orders = orderService.findOrdersByUserId(id, searchQuery);
+        orderHateoasBuilder.buildToEntitiesCollection(orders);
         return orders;
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/{userId}/orders/{orderId}")
     public OrderDto findOrder(@PathVariable("userId") Long userId, @PathVariable("orderId") Long orderId) {
         OrderDto order = orderService.findOrderIfUserOwnsIt(orderId, userId);
+        orderHateoasBuilder.buildForMainEntity(order);
         return order;
     }
 }

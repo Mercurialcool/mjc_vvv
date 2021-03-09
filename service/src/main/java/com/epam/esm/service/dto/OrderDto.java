@@ -13,7 +13,7 @@ import java.util.Set;
 
 @Validated
 @JsonRootName(value = "order")
-public class OrderDto extends EntityDto implements Serializable {
+public class OrderDto extends EntityDto<Long, OrderDto> implements Serializable {
 
     private Instant dateOfIssue;
     private float quantity;

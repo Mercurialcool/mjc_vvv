@@ -1,8 +1,10 @@
 package com.epam.esm.service.dto;
 
+import org.springframework.hateoas.RepresentationModel;
+
 import java.io.Serializable;
 
-public class EntityDto implements Serializable {
+public abstract class EntityDto<ID, T extends EntityDto<ID, T>> extends RepresentationModel<T> implements Serializable {
 
     protected Long id;
 

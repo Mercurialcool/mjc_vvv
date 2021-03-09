@@ -8,7 +8,7 @@ import java.time.Instant;
 import java.util.Set;
 
 @JsonRootName(value = "certificate")
-public class CertificateDto extends EntityDto implements Serializable {
+public class CertificateDto extends EntityDto<Long, CertificateDto> implements Serializable {
     private static final long serialVersionUID = 1144649892569462913L;
 
     private String name;
