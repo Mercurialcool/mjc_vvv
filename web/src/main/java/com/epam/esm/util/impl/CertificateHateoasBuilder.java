@@ -2,7 +2,6 @@ package com.epam.esm.util.impl;
 
 import com.epam.esm.controller.GiftCertificateController;
 import com.epam.esm.service.dto.CertificateDto;
-import com.epam.esm.service.dto.EntityDto;
 import com.epam.esm.util.HateoasBuilder;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.Link;
@@ -16,11 +15,11 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 @Component
 public class CertificateHateoasBuilder implements HateoasBuilder<Long, CertificateDto> {
 
-//    private final TagHateoasBuilder tagHateoasBuilder;
-//
-//    public CertificateHateoasBuilder(TagHateoasBuilder tagHateoasBuilder) {
-//        this.tagHateoasBuilder = tagHateoasBuilder;
-//    }
+    private final TagHateoasBuilder tagHateoasBuilder;
+
+    public CertificateHateoasBuilder(TagHateoasBuilder tagHateoasBuilder) {
+        this.tagHateoasBuilder = tagHateoasBuilder;
+    }
 
     private void buildGetAndPostHateoas(RepresentationModel representationModel) {
         representationModel.add(linkTo(GiftCertificateController.class).withRel("get all"));

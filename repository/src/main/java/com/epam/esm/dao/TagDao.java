@@ -13,5 +13,5 @@ import java.util.Set;
 
 public interface TagDao extends CrudDao<Tag>{
     public Set<Tag> getTagsByIds(List<Long> ids) throws DaoException;
-
+    public List<Tag> getMostFrequentTag() throws DaoException;
 }

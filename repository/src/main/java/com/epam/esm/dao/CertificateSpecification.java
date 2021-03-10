@@ -36,15 +36,13 @@ public class CertificateSpecification<T> implements Specification<T> {
                     criteriaBuilder.asc(root.get("name")):criteriaBuilder.desc(root.get("name")));
         }
         if (searchQuery.getTags() != null) {
-//            CriteriaBuilder builder = entityManager.getCriteriaBuilder();
-//            CriteriaQuery<Object> query = criteriaBuilder.createQuery(Object.class);
-//            Root<Object> objectRoot = criteriaQuery.from(Object.class);
-//
-//            Expression<Collection<String>> tagsName = root.get("tagsName");
-//            Predicate hasTags = criteriaBuilder.isMember("tagsName", tagsName);
-//
-//            criteriaQuery.where(hasTags);
-//            List<?> hasTagsList = entityManager.createQuery(criteriaQuery).getResultList();
+            Root<Object> objectRoot = criteriaQuery.from(Object.class);
+
+            Expression<Collection<String>> tagsName = root.get("tagsName");
+            Predicate hasTags = criteriaBuilder.isMember("tagsName", tagsName);
+
+            criteriaQuery.where(hasTags);
+            List<?> hasTagsList = entityManager.createQuery(criteriaQuery).getResultList();
         }
         switch (predicates.size()) {
             case 0:

@@ -16,9 +16,8 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
-import org.springframework.util.CollectionUtils;
-import org.springframework.util.MultiValueMap;
 
+import javax.persistence.EntityManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
@@ -39,12 +38,23 @@ public class TagDaoImpl implements TagDao, RowMapper<Tag> {
     public static final String GET_TAGS_BY_IDS ="SELECT * FROM tag WHERE id IN (?)";
     public static final String GET_TAG_BY_NAME = "SELECT * FROM tag WHERE name = ?";
     public static final String EDIT_TAG = "UPDATE tag SET name = ? WHERE id = ?";
+    public static final String GET_MOST_FREQUENT_TAG = "";
 
-    @Autowired
     private JdbcTemplate jdbcTemplate;
+    private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+    private EntityManager entityManager;
 
     @Autowired
-    private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+    public TagDaoImpl(JdbcTemplate jdbcTemplate,
+                      NamedParameterJdbcTemplate namedParameterJdbcTemplate,
+                      EntityManager entityManager) {
+        this.jdbcTemplate = jdbcTemplate;
+        this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
+        this.entityManager = entityManager;
+    }
+
+    public TagDaoImpl() {
+    }
 
     @Override
     public List<Tag> getAll() {
@@ -134,6 +144,11 @@ public class TagDaoImpl implements TagDao, RowMapper<Tag> {
         String idList = String.join(",", idsString);
         return jdbcTemplate.query(GET_TAGS_BY_IDS, new Object[]{idList}, new RowMapTagProvider())
                 .stream().collect(Collectors.toSet());
+    }
+
+    @Override
+    public List<Tag> getMostFrequentTag() throws DaoException {
+        return (List<Tag>) entityManager.createQuery(GET_MOST_FREQUENT_TAG);
     }
 
     @Override

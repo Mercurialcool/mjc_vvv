@@ -2,19 +2,13 @@ package com.epam.esm.controller;
 
 
 import com.epam.esm.dao.SearchQuery;
-import com.epam.esm.model.User;
 import com.epam.esm.service.OrderService;
 import com.epam.esm.service.UserService;
 import com.epam.esm.service.dto.OrderDto;
 import com.epam.esm.service.dto.UserDto;
-import com.epam.esm.service.exception.ServiceException;
 import com.epam.esm.util.impl.OrderHateoasBuilder;
 import com.epam.esm.util.impl.UserHateoasBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Pageable;
-import org.springframework.hateoas.CollectionModel;
-import org.springframework.util.MultiValueMap;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;

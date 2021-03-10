@@ -22,8 +22,6 @@ public class TagHateoasBuilder implements HateoasBuilder<Long, TagDto> {
         representationModel.add(linkTo(TagController.class).withRel("create new"));
     }
 
-    //private void
-
     @Override
     public void buildSelfReference(TagDto dto) {
         dto.add(linkTo(TagController.class).slash(dto.getId()).withSelfRel());

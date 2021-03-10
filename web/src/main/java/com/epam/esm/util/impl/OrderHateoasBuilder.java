@@ -2,7 +2,6 @@ package com.epam.esm.util.impl;
 
 import com.epam.esm.controller.GiftCertificateController;
 import com.epam.esm.controller.OrderController;
-import com.epam.esm.service.dto.EntityDto;
 import com.epam.esm.service.dto.OrderDto;
 import com.epam.esm.util.HateoasBuilder;
 import org.springframework.hateoas.CollectionModel;

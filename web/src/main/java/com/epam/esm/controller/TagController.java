@@ -2,18 +2,13 @@ package com.epam.esm.controller;
 
 import com.epam.esm.dao.SearchQuery;
 import com.epam.esm.dao.exception.DaoException;
-import com.epam.esm.model.Tag;
 import com.epam.esm.service.TagService;
-import com.epam.esm.service.dto.CertificateDto;
 import com.epam.esm.service.dto.TagDto;
 import com.epam.esm.service.exception.ServiceException;
-import com.epam.esm.util.impl.CertificateHateoasBuilder;
 import com.epam.esm.util.impl.TagHateoasBuilder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Pageable;
-import org.springframework.util.MultiValueMap;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -88,5 +83,12 @@ public class TagController {
             logger.error(e);
             throw e;
         }
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/mostFrequentTag")
+    public List<TagDto> getMostFrequentTag() {
+        List<TagDto> list = tagService.getMostFrequentTag();
+        tagHateoasBuilder.buildToEntitiesCollection(list);
+        return list;
     }
 }

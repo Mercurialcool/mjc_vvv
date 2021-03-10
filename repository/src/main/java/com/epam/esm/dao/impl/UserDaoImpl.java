@@ -73,9 +73,6 @@ public class UserDaoImpl implements UserDao {
             final CombinedSqlParameterSource parameterSource = new CombinedSqlParameterSource(user);
             namedParameterJdbcTemplate.update(ADD_NEW_USER, parameterSource, keyHolder, new String[]{"id"});
             user.setId(keyHolder.getKey().longValue());
-//            final BeanPropertySqlParameterSource paramSource = new BeanPropertySqlParameterSource(user);
-//            namedParameterJdbcTemplate.update(ADD_NEW_USER, paramSource, keyHolder, new String[]{"id"});
-//            user.setId(keyHolder.getKey().longValue());
         }
         catch (DataAccessException e){
             throw new DaoException(e);

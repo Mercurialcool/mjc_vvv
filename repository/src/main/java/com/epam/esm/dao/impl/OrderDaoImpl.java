@@ -3,9 +3,7 @@ package com.epam.esm.dao.impl;
 import com.epam.esm.dao.CombinedSqlParameterSource;
 import com.epam.esm.dao.OrderDao;
 import com.epam.esm.dao.exception.DaoException;
-import com.epam.esm.model.Certificate;
 import com.epam.esm.model.Order;
-import com.epam.esm.model.Tag;
 import com.epam.esm.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -13,12 +11,10 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
-import org.springframework.util.MultiValueMap;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -57,9 +53,6 @@ public class OrderDaoImpl implements OrderDao, RowMapper<Order> {
                 parameterSource.addValue("dateOfIssue", Timestamp.from(order.getDateOfIssue()));
                 namedParameterJdbcTemplate.update(ADD_NEW_ORDER, parameterSource ,keyHolder, new String[]{"id"});
                 order.setId(keyHolder.getKey().longValue());
-//            final BeanPropertySqlParameterSource paramSource = new BeanPropertySqlParameterSource(order);
-//            namedParameterJdbcTemplate.update(ADD_NEW_ORDER, paramSource, keyHolder, new String[]{"id"});
-//            order.setId(keyHolder.getKey().longValue());
         }
         catch (DataAccessException e){
             throw new DaoException(e);

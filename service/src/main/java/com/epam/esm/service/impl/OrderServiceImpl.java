@@ -1,32 +1,20 @@
 package com.epam.esm.service.impl;
 
 import com.epam.esm.dao.*;
-import com.epam.esm.model.Certificate;
 import com.epam.esm.model.Order;
-import com.epam.esm.model.OrderCondition;
 import com.epam.esm.model.User;
 import com.epam.esm.service.OrderService;
 import com.epam.esm.service.converter.Converter;
-import com.epam.esm.service.dto.CertificateDto;
 import com.epam.esm.service.dto.OrderDto;
-import com.epam.esm.service.dto.UserDto;
-import com.epam.esm.service.exception.certificate.CertificateAlreadyExistsException;
-import com.epam.esm.service.exception.certificate.CertificateNotFoundException;
 import com.epam.esm.service.exception.order.OrderAlreadyExistsException;
 import com.epam.esm.service.exception.order.OrderNotFoundException;
 import com.epam.esm.service.utils.SearchQueryUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 
 @Service

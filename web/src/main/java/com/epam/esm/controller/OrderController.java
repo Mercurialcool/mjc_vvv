@@ -4,14 +4,10 @@ package com.epam.esm.controller;
 import com.epam.esm.dao.SearchQuery;
 import com.epam.esm.service.OrderService;
 import com.epam.esm.service.dto.OrderDto;
-import com.epam.esm.service.dto.TagDto;
 import com.epam.esm.util.impl.OrderHateoasBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Pageable;
-import org.springframework.hateoas.CollectionModel;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.List;
 
 @RestController

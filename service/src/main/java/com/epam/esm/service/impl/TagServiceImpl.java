@@ -5,12 +5,9 @@ import com.epam.esm.dao.CustomTagRepository;
 import com.epam.esm.dao.SearchQuery;
 import com.epam.esm.dao.TagDao;
 import com.epam.esm.dao.exception.DaoException;
-import com.epam.esm.model.Certificate;
 import com.epam.esm.model.Tag;
 import com.epam.esm.service.TagService;
 import com.epam.esm.service.converter.Converter;
-import com.epam.esm.service.converter.impl.TagConverter;
-import com.epam.esm.service.dto.CertificateDto;
 import com.epam.esm.service.dto.TagDto;
 import com.epam.esm.service.exception.ServiceException;
 import com.epam.esm.service.exception.tag.TagAlreadyExistsException;
@@ -22,11 +19,11 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
-import org.springframework.util.MultiValueMap;
 
 
 import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @Transactional(readOnly = true)
 public class TagServiceImpl implements TagService {
@@ -98,5 +95,10 @@ public class TagServiceImpl implements TagService {
                 throw new TagNotFoundException("Tag not found");
             }
             return tagConverter.objectDto(tagDao.getById(id));
+    }
+
+    @Override
+    public List<TagDto> getMostFrequentTag() throws ServiceException {
+        return tagDao.getMostFrequentTag().stream().map(tagConverter::objectDto).collect(Collectors.toList());
     }
 }

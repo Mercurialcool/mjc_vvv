@@ -3,7 +3,6 @@ package com.epam.esm.util.impl;
 import com.epam.esm.controller.GiftCertificateController;
 import com.epam.esm.controller.UserController;
 import com.epam.esm.dao.SearchQuery;
-import com.epam.esm.service.dto.EntityDto;
 import com.epam.esm.service.dto.OrderDto;
 import com.epam.esm.service.dto.UserDto;
 import com.epam.esm.util.HateoasBuilder;

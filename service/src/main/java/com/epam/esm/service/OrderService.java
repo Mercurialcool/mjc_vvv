@@ -3,7 +3,6 @@ package com.epam.esm.service;
 import com.epam.esm.dao.SearchQuery;
 import com.epam.esm.service.dto.OrderDto;
 import com.epam.esm.service.exception.ServiceException;
-import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
