@@ -12,6 +12,7 @@ import java.util.Collection;
 import java.util.List;
 
 public class CertificateSpecification<T> implements Specification<T> {
+
     @Autowired
     private EntityManager entityManager;
 
@@ -36,8 +37,6 @@ public class CertificateSpecification<T> implements Specification<T> {
                     criteriaBuilder.asc(root.get("name")):criteriaBuilder.desc(root.get("name")));
         }
         if (searchQuery.getTags() != null) {
-            Root<Object> objectRoot = criteriaQuery.from(Object.class);
-
             Expression<Collection<String>> tagsName = root.get("tagsName");
             Predicate hasTags = criteriaBuilder.isMember("tagsName", tagsName);
 

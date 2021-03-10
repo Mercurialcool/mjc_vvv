@@ -18,6 +18,7 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
+import javax.persistence.SqlResultSetMapping;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
@@ -38,7 +39,21 @@ public class TagDaoImpl implements TagDao, RowMapper<Tag> {
     public static final String GET_TAGS_BY_IDS ="SELECT * FROM tag WHERE id IN (?)";
     public static final String GET_TAG_BY_NAME = "SELECT * FROM tag WHERE name = ?";
     public static final String EDIT_TAG = "UPDATE tag SET name = ? WHERE id = ?";
-    public static final String GET_MOST_FREQUENT_TAG = "";
+    public static final String GET_MOST_FREQUENT_TAG = String.join(" ",
+            "SELECT id, name FROM" ,
+            "(SELECT ct.tag_id FROM" ,
+            "(SELECT o.user_id FROM orders o " ,
+            "JOIN order_conditions oc ON o.id = oc.order_id" ,
+            "GROUP BY o.user_id " ,
+            "ORDER BY SUM(oc.price) DESC" ,
+            "LIMIT 1) t_user" ,
+            "JOIN orders uo ON uo.user_id = t_user.user_id" ,
+            "JOIN order_conditions uoc ON uo.id = uoc.order_id " ,
+            "JOIN certificates_tags ct ON ct.gift_certificate_id = uoc.gift_certificate_id" ,
+            "GROUP BY ct.tag_id" ,
+            "ORDER BY count(1) DESC" ,
+            "LIMIT 1) wutag" ,
+            "JOIN tag ON wutag.tag_id = id");
 
     private JdbcTemplate jdbcTemplate;
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
@@ -148,7 +163,7 @@ public class TagDaoImpl implements TagDao, RowMapper<Tag> {
 
     @Override
     public List<Tag> getMostFrequentTag() throws DaoException {
-        return (List<Tag>) entityManager.createQuery(GET_MOST_FREQUENT_TAG);
+        return (List<Tag>) entityManager.createNativeQuery(GET_MOST_FREQUENT_TAG, Tag.class).getResultList();
     }
 
     @Override
