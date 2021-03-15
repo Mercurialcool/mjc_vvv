@@ -13,7 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)
@@ -44,20 +46,18 @@ public class UserServiceImpl implements UserService {
         if(user == null) {
             throw new UserNotFoundException("User not found");
         }
-        return userConverter.objectDtoList(userDao.getUserByName(name));
+        return userConverter.convertObjectListToDto(userDao.getUserByName(name));
     }
 
     @Override
     public UserDto getById(Long id) throws ServiceException {
-        User user = userDao.getById(id);
-        if(user == null) {
-            throw new UserNotFoundException("User not found");
-        }
-        return userConverter.objectDto(userDao.getById(id));
+        User user =
+        Optional.ofNullable(userDao.getById(id)).orElseThrow(() -> new UserNotFoundException("User not found"));
+        return userConverter.convertObjectToDto(userDao.getById(id));
     }
 
     @Override
     public List<UserDto> getAll(SearchQuery searchQuery) throws ServiceException, DaoException {
-        return userConverter.objectDtoList(customUserRepository.findAll(SearchQueryUtil.getPage(searchQuery)).toList());
+        return userConverter.convertObjectListToDto(customUserRepository.findAll(SearchQueryUtil.getPage(searchQuery)).toList());
     }
 }

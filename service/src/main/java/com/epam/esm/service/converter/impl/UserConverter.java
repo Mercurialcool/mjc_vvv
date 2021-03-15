@@ -17,26 +17,26 @@ public class UserConverter implements Converter<User, UserDto> {
     private ModelMapper dtoRouter;
 
     @Override
-    public User dtoObject(UserDto dto) {
+    public User convertDtoToObject(UserDto dto) {
         User user = new User();
         dtoRouter.map(dto, user);
         return user;
     }
 
     @Override
-    public UserDto objectDto(User entity) {
+    public UserDto convertObjectToDto(User entity) {
         UserDto userDto = new UserDto();
         dtoRouter.map(entity, userDto);
         return userDto;
     }
 
     @Override
-    public List<User> dtoObjectList(List<UserDto> dtoList) {
-        return dtoList.stream().map(this::dtoObject).collect(Collectors.toList());
+    public List<User> convertDtoToObjectList(List<UserDto> dtoList) {
+        return dtoList.stream().map(this::convertDtoToObject).collect(Collectors.toList());
     }
 
     @Override
-    public List<UserDto> objectDtoList(List<User> objectList) {
-        return objectList.stream().map(this::objectDto).collect(Collectors.toList());
+    public List<UserDto> convertObjectListToDto(List<User> objectList) {
+        return objectList.stream().map(this::convertObjectToDto).collect(Collectors.toList());
     }
 }

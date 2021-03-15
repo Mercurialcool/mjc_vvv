@@ -40,7 +40,7 @@ public class UserHateoasBuilder implements HateoasBuilder<Long, UserDto> {
         buildSelfReference(dto);
         dto.add(linkTo(methodOn(UserController.class).createOrder(new OrderDto(), dto.getId())).withRel("create new"));
         dto.add(linkTo(methodOn(UserController.class).findOrders(dto.getId(), new SearchQuery())).withRel("get all"));
-        dto.add(linkTo(methodOn(UserController.class).findOrder(dto.getId(), dto.getId())).withRel("get exact order"));//ask
+        dto.add(linkTo(methodOn(UserController.class).findOrder(dto.getId(), dto.getId())).withRel("get exact order"));
     }
 
     @Override

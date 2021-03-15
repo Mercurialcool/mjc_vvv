@@ -42,6 +42,7 @@ public class CertificateHateoasBuilder implements HateoasBuilder<Long, Certifica
         buildSelfReference(dto);
         dto.add(linkTo(GiftCertificateController.class).slash(dto.getId()).withRel("to be updated"));
         dto.add(linkTo(GiftCertificateController.class).slash(dto.getId()).withRel("to be deleted"));
+        dto.getTags().forEach(tagHateoasBuilder::buildSelfReference);
     }
 
     @Override

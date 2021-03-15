@@ -17,26 +17,26 @@ public class TagConverter implements Converter<Tag, TagDto> {
     private ModelMapper dtoRouter;
 
     @Override
-    public Tag dtoObject(TagDto dto) {
+    public Tag convertDtoToObject(TagDto dto) {
         Tag tag = new Tag();
         dtoRouter.map(dto, tag);
         return tag;
     }
 
     @Override
-    public TagDto objectDto(Tag tag) {
+    public TagDto convertObjectToDto(Tag tag) {
         TagDto tagDto = new TagDto();
         dtoRouter.map(tag, tagDto);
         return tagDto;
     }
 
     @Override
-    public List<Tag> dtoObjectList(List<TagDto> dtoList) {
-        return dtoList.stream().map(this::dtoObject).collect(Collectors.toList());
+    public List<Tag> convertDtoToObjectList(List<TagDto> dtoList) {
+        return dtoList.stream().map(this::convertDtoToObject).collect(Collectors.toList());
     }
 
     @Override
-    public List<TagDto> objectDtoList(List<Tag> objectList) {
-        return objectList.stream().map(this::objectDto).collect(Collectors.toList());
+    public List<TagDto> convertObjectListToDto(List<Tag> objectList) {
+        return objectList.stream().map(this::convertObjectToDto).collect(Collectors.toList());
     }
 }

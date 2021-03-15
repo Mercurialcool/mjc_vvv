@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonRootName;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.Set;
 
@@ -13,7 +14,7 @@ public class CertificateDto extends EntityDto<Long, CertificateDto> implements S
 
     private String name;
     private String description;
-    private Double price;
+    private BigDecimal price;
     private Integer duration;
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     private Instant createDate = Instant.now();
@@ -41,11 +42,11 @@ public class CertificateDto extends EntityDto<Long, CertificateDto> implements S
         this.description = description;
     }
 
-    public Double getPrice() {
+    public BigDecimal getPrice() {
         return price;
     }
 
-    public void setPrice(Double price) {
+    public void setPrice(BigDecimal price) {
         this.price = price;
     }
 

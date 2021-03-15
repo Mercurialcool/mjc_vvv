@@ -21,7 +21,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 
-import javax.persistence.SqlResultSetMapping;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -45,7 +44,7 @@ public class TagServiceImpl implements TagService {
     @Override
     public List<TagDto> getByParameters(SearchQuery searchQuery) throws DaoException {
         Pageable pageable = SearchQueryUtil.getPage(searchQuery);
-        return tagConverter.objectDtoList(
+        return tagConverter.convertObjectListToDto(
                 customTagRepository.findAll(new CertificateSpecification<>(searchQuery), pageable).toList());
     }
 
@@ -56,8 +55,8 @@ public class TagServiceImpl implements TagService {
             if(tagDao.getByName(tagDto.getName())!= null){
                 throw new TagAlreadyExistsException("Tag already exists");
             }
-            Tag tag = tagConverter.dtoObject(tagDto);
-            return tagConverter.objectDto(tagDao.add(tag));
+            Tag tag = tagConverter.convertDtoToObject(tagDto);
+            return tagConverter.convertObjectToDto(tagDao.add(tag));
         } catch (DataAccessException e) {
             throw new DaoException(e);
         }
@@ -76,7 +75,7 @@ public class TagServiceImpl implements TagService {
             }
             tagDao.getById(id);
             tagDto.setId(id);
-            Tag tag = tagConverter.dtoObject(tagDto);
+            Tag tag = tagConverter.convertDtoToObject(tagDto);
             tagDao.delete(tag);
     }
 
@@ -86,7 +85,7 @@ public class TagServiceImpl implements TagService {
             if (tag == null) {
                 throw new TagNotFoundException("Tag not found");
             }
-            return tagConverter.objectDto(tagDao.getByName(name));
+            return tagConverter.convertObjectToDto(tagDao.getByName(name));
     }
 
     @Override
@@ -95,11 +94,11 @@ public class TagServiceImpl implements TagService {
             if (tag == null) {
                 throw new TagNotFoundException("Tag not found");
             }
-            return tagConverter.objectDto(tagDao.getById(id));
+            return tagConverter.convertObjectToDto(tagDao.getById(id));
     }
 
     @Override
     public List<TagDto> getMostFrequentTag() throws ServiceException {
-        return tagDao.getMostFrequentTag().stream().map(tagConverter::objectDto).collect(Collectors.toList());
+        return tagDao.getMostFrequentTag().stream().map(tagConverter::convertObjectToDto).collect(Collectors.toList());
     }
 }

@@ -50,7 +50,7 @@ public class CertificateServiceImpl implements CertificateService {
     @Override
     public List<CertificateDto> getByParameters(SearchQuery searchQuery) throws ServiceException {
         Pageable pageable = SearchQueryUtil.getPage(searchQuery);
-        return certificateConverter.objectDtoList(
+        return certificateConverter.convertObjectListToDto(
                 customCertificateRepository.findAll(new CertificateSpecification<>(searchQuery), pageable).toList());
     }
 
@@ -64,13 +64,13 @@ public class CertificateServiceImpl implements CertificateService {
         if (certificateDto.getTags()!=null){
             for (TagDto tagDto: certificateDto.getTags()){
                     if (tagDao.getByName(tagDto.getName())==null){
-                        Tag tag = tagConverter.dtoObject(tagDto);
+                        Tag tag = tagConverter.convertDtoToObject(tagDto);
                         tagDao.add(tag);
                     }
             }
         }
-            Certificate certificate = certificateConverter.dtoObject(certificateDto);
-            return certificateConverter.objectDto(certificateDao.add(certificate));
+            Certificate certificate = certificateConverter.convertDtoToObject(certificateDto);
+            return certificateConverter.convertObjectToDto(certificateDao.add(certificate));
     }
 
     @Transactional
@@ -86,8 +86,8 @@ public class CertificateServiceImpl implements CertificateService {
             }
             certificateDao.getById(id);
             certificateDto.setId(id);
-            Certificate certificate = certificateConverter.dtoObject(certificateDto);
-            certificateConverter.objectDto(certificateDao.delete(certificate));
+            Certificate certificate = certificateConverter.convertDtoToObject(certificateDto);
+            certificateConverter.convertObjectToDto(certificateDao.delete(certificate));
     }
 
     @Override
@@ -96,7 +96,7 @@ public class CertificateServiceImpl implements CertificateService {
             if(certificate == null) {
                 throw new CertificateNotFoundException("Certificate not found");
             }
-            return certificateConverter.objectDto(certificateDao.getById(id));
+            return certificateConverter.convertObjectToDto(certificateDao.getById(id));
     }
 
     @Transactional
@@ -105,13 +105,13 @@ public class CertificateServiceImpl implements CertificateService {
             if (certificateDao.getById(id) == null)
                 throw new CertificateNotFoundException("Certificate was not found");
             certificateDto.setId(id);
-            Certificate certificate = certificateConverter.dtoObject(certificateDto);
-            return certificateConverter.objectDto(certificateDao.edit(certificate));
+            Certificate certificate = certificateConverter.convertDtoToObject(certificateDto);
+            return certificateConverter.convertObjectToDto(certificateDao.edit(certificate));
     }
 
     @Override
-    public List<CertificateDto> getCertificateByTag(Tag tag) throws ServiceException {
-             return certificateConverter.objectDtoList(certificateDao.getCertificateByTag(tag));
+    public List<CertificateDto> getCertificateByTag(List<Long> tagList) throws ServiceException {
+             return certificateConverter.convertObjectListToDto(certificateDao.getCertificateByTag(tagList));
     }
 
     @Override
@@ -120,6 +120,6 @@ public class CertificateServiceImpl implements CertificateService {
             if(certificate == null) {
                 throw new CertificateNotFoundException("Certificate not found");
             }
-            return certificateConverter.objectDto(certificateDao.getByName(name));
+            return certificateConverter.convertObjectToDto(certificateDao.getByName(name));
     }
 }

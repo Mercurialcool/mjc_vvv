@@ -1,7 +1,5 @@
 package com.epam.esm.dao;
 
-import com.epam.esm.model.Certificate;
-import com.epam.esm.model.Entity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 

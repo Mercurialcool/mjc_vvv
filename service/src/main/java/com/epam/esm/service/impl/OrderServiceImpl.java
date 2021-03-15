@@ -43,7 +43,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public OrderDto findOrderById(Long id) {
         Order order = orderDao.getById(id);
-        return orderConverter.objectDto(orderDao.getById(id));
+        return orderConverter.convertObjectToDto(orderDao.getById(id));
     }
 
     @Transactional
@@ -54,7 +54,7 @@ public class OrderServiceImpl implements OrderService {
         if (user == null)
             throw new OrderNotFoundException("Order not found");
         Order order = new Order(Instant.now(), 1, user);
-        return orderConverter.objectDto(customOrderRepository.save(order));
+        return orderConverter.convertObjectToDto(customOrderRepository.save(order));
     }
 
 //    private Set<OrderCondition> findOrderConditions(OrderDto orderDto) {
@@ -82,7 +82,7 @@ public class OrderServiceImpl implements OrderService {
                 e.printStackTrace();
             }
         }
-        return orderConverter.objectDto(order);
+        return orderConverter.convertObjectToDto(order);
     }
 
     @Override
@@ -91,11 +91,11 @@ public class OrderServiceImpl implements OrderService {
         if(user == null) {
             throw new OrderNotFoundException("Not found");
         }
-        return orderConverter.objectDtoList(customOrderRepository.findAllByUser(user, SearchQueryUtil.getPage(searchQuery)).toList());
+        return orderConverter.convertObjectListToDto(customOrderRepository.findAllByUser(user, SearchQueryUtil.getPage(searchQuery)).toList());
     }
 
     @Override
     public List<OrderDto> findAll(SearchQuery searchQuery) {
-        return orderConverter.objectDtoList(customOrderRepository.findAll(SearchQueryUtil.getPage(searchQuery)).toList());
+        return orderConverter.convertObjectListToDto(customOrderRepository.findAll(SearchQueryUtil.getPage(searchQuery)).toList());
     }
 }

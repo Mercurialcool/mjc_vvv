@@ -8,21 +8,21 @@ public interface Converter<O, D> {
      * @param dto
      * @return object of a needed type
      */
-    O dtoObject(D dto);
+    O convertDtoToObject(D dto);
 
     /**
      * Converts an entity type to data transfer object
      * @param entity
      * @return object of a needed type
      */
-    D objectDto(O entity);
+    D convertObjectToDto(O entity);
 
     /**
      * Converts Data transfer object to an entity type
      * @param dtoList
      * @return object list of a needed type
      */
-    List<O> dtoObjectList(List<D> dtoList);
+    List<O> convertDtoToObjectList(List<D> dtoList);
 
 
     /**
@@ -30,5 +30,5 @@ public interface Converter<O, D> {
      * @param objectList
      * @return object list of a needed type
      */
-    List<D> objectDtoList(List<O> objectList);
+    List<D> convertObjectListToDto(List<O> objectList);
 }

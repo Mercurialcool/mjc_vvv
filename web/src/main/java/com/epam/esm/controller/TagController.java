@@ -48,12 +48,9 @@ public class TagController {
 
     @RequestMapping(method = RequestMethod.POST)
     public TagDto add(@RequestBody @Validated TagDto tagDto) {
-        try {
-            return tagService.add(tagDto);
-        } catch (ServiceException e) {
-            logger.error(e);
-            throw e;
-        }
+        TagDto tag = tagService.add(tagDto);
+        tagHateoasBuilder.buildSelfReference(tag);
+        return tag;
     }
 
     /**

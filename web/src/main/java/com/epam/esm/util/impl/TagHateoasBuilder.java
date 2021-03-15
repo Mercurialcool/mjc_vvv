@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Component
 public class TagHateoasBuilder implements HateoasBuilder<Long, TagDto> {
@@ -20,6 +21,11 @@ public class TagHateoasBuilder implements HateoasBuilder<Long, TagDto> {
     private void buildGetAndPostHateoas(RepresentationModel representationModel) {
         representationModel.add(linkTo(TagController.class).withRel("get all"));
         representationModel.add(linkTo(TagController.class).withRel("create new"));
+    }
+
+    private void buildReferenceForMostFrequentTag(RepresentationModel representationModel) {
+        representationModel.add(linkTo(methodOn(TagController.class).getMostFrequentTag()).
+                withRel("get most frequent tag"));
     }
 
     @Override
@@ -30,6 +36,8 @@ public class TagHateoasBuilder implements HateoasBuilder<Long, TagDto> {
     @Override
     public void buildForMainEntity(TagDto dto) {
         buildForMinorEntity(dto);
+        buildGetAndPostHateoas(dto);
+        buildReferenceForMostFrequentTag(dto);
     }
 
     @Override
@@ -44,6 +52,8 @@ public class TagHateoasBuilder implements HateoasBuilder<Long, TagDto> {
         listDto.forEach(this::buildForMinorEntity);
         Link self = linkTo(TagController.class).withSelfRel();
         CollectionModel<TagDto> collectionModel = CollectionModel.of(listDto, self);
+        buildGetAndPostHateoas(collectionModel);
+        buildReferenceForMostFrequentTag(collectionModel);
         return collectionModel;
     }
 }

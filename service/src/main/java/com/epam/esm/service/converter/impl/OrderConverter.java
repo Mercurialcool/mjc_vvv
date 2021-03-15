@@ -17,26 +17,26 @@ public class OrderConverter implements Converter<Order, OrderDto> {
     private ModelMapper dtoRouter;
 
     @Override
-    public Order dtoObject(OrderDto dto) {
+    public Order convertDtoToObject(OrderDto dto) {
         Order order = new Order();
         dtoRouter.map(dto, order);
         return order;
     }
 
     @Override
-    public OrderDto objectDto(Order entity) {
+    public OrderDto convertObjectToDto(Order entity) {
         OrderDto orderDto = new OrderDto();
         dtoRouter.map(entity, orderDto);
         return orderDto;
     }
 
     @Override
-    public List<Order> dtoObjectList(List<OrderDto> dtoList) {
-        return dtoList.stream().map(this::dtoObject).collect(Collectors.toList());
+    public List<Order> convertDtoToObjectList(List<OrderDto> dtoList) {
+        return dtoList.stream().map(this::convertDtoToObject).collect(Collectors.toList());
     }
 
     @Override
-    public List<OrderDto> objectDtoList(List<Order> objectList) {
-        return objectList.stream().map(this::objectDto).collect(Collectors.toList());
+    public List<OrderDto> convertObjectListToDto(List<Order> objectList) {
+        return objectList.stream().map(this::convertObjectToDto).collect(Collectors.toList());
     }
 }

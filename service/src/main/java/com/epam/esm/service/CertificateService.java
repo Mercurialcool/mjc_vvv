@@ -22,9 +22,9 @@ public interface CertificateService extends CrudService<CertificateDto> {
 
     /**
      * Searches Certificates by tag
-     * @param tag Object to search by
+     * @param tagList Object to search by
      * @return List of proper certificates
      * @throws ServiceException
      */
-    List<CertificateDto> getCertificateByTag(Tag tag) throws  ServiceException;
+    List<CertificateDto> getCertificateByTag(List<Long> tagList) throws  ServiceException;
 }

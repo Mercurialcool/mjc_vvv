@@ -34,7 +34,7 @@ public class CertificateDaoImpl implements CertificateDao {
     public static final String REMOVE_CERTIFICATE = "DELETE FROM gift_certificate WHERE id = ? ";
     public static final String REMOVE_CERTIFICATE_CONSTRAINT = "DELETE FROM certificates_tags WHERE gift_certificate_id = ?";
     public static final String GET_CERTIFICATES_BY_IDS = "SELECT * FROM gift_certificate WHERE id IN (?)";
-    public static final String GET_CERTIFICATES_BY_TAG_ID = "SELECT gift_certificate_id FROM certificates_tags WHERE tag_id = ?";
+    public static final String GET_CERTIFICATES_BY_TAG_ID = "SELECT gift_certificate_id FROM certificates_tags WHERE tag_id IN (?)";
     public static final String GET_TAG_ID_BY_CERTIFICATE = "SELECT tag_id FROM certificates_tags WHERE gift_certificate_id = ?";
     public static final String ADD_NEW_TAG_CERTIFICATE = "INSERT INTO certificates_tags (tag_id, gift_certificate_id) values(:tag_id,:gift_certificate_id)";
 
@@ -49,8 +49,9 @@ public class CertificateDaoImpl implements CertificateDao {
         this.tagDao = tagDao;
     }
 
-    private List<Long> getCertificateIdsByTagId(Long tagId){
-        return jdbcTemplate.query(GET_CERTIFICATES_BY_TAG_ID, new Object[] {tagId},
+    private List<Long> getCertificateIdsByTagId(List<Long> tagIds){
+        String idList = String.join(",", tagIds.stream().map((id) -> id.toString()).collect(Collectors.toList()));
+        return jdbcTemplate.query(GET_CERTIFICATES_BY_TAG_ID, new Object[] {idList},
                 (rs, rowNum) -> rs.getLong(1));
     }
 
@@ -193,16 +194,24 @@ public class CertificateDaoImpl implements CertificateDao {
     @Override
     public Certificate getById(Long id) throws DaoException {
         try {
-            return jdbcTemplate.queryForObject(GET_CERTIFICATE_BY_ID, new Object[]{id},
+            Certificate certificate =  jdbcTemplate.queryForObject(GET_CERTIFICATE_BY_ID, new Object[]{id},
                     new BeanPropertyRowMapper<>(Certificate.class));
+                for (Tag t : certificate.getTags()) {
+                    Tag foundTag = tagDao.getByName(t.getName());
+                    if (foundTag == null) {
+                        foundTag = tagDao.add(t);
+                    }
+                    t.setId(foundTag.getId());
+                }
+            return certificate;
         } catch (EmptyResultDataAccessException e) {
             return null;
         }
     }
 
     @Override
-    public List<Certificate> getCertificateByTag(Tag tagName) throws DaoException {
-        List<Long> ids = getCertificateIdsByTagId(tagName.getId());
+    public List<Certificate> getCertificateByTag(List<Long> tagIds) throws DaoException {
+        List<Long> ids = getCertificateIdsByTagId(tagIds);
         List<String> idsString = ids.stream().map((id) -> id.toString()).collect(Collectors.toList());
         String idList = String.join(",", idsString);
         List<Certificate> certificates = jdbcTemplate.query(GET_CERTIFICATES_BY_IDS, new Object[]{idList}, new RowMapCertificateProvider());
@@ -212,7 +221,5 @@ public class CertificateDaoImpl implements CertificateDao {
             c.setTags(tagList);
         }
         return certificates;
-
-
     }
 }

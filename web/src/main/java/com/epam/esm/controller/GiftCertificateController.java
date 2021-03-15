@@ -11,7 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/certificates")
@@ -49,12 +51,9 @@ public class GiftCertificateController {
 
     @RequestMapping(method = RequestMethod.POST)
     public CertificateDto create(@RequestBody @Validated CertificateDto certificateDto) {
-        try {
-            return certificateService.add(certificateDto);
-        } catch (ServiceException e) {
-            logger.error(e);
-            throw e;
-        }
+        CertificateDto certificate = certificateService.add(certificateDto);
+        certificateHateoasBuilder.buildSelfReference(certificate);
+        return certificate;
     }
 
     /**
@@ -93,11 +92,8 @@ public class GiftCertificateController {
 
     @RequestMapping(method = RequestMethod.PATCH, value = "/{id}")
     public CertificateDto updateCertificate(@RequestBody CertificateDto certificateDto, @PathVariable Long id) {
-        try {
-            return certificateService.update(certificateDto, id);
-        } catch (ServiceException e) {
-            logger.error(e);
-            throw e;
-        }
+        CertificateDto certificate = certificateService.update(certificateDto, id);
+        certificateHateoasBuilder.buildSelfReference(certificateDto);
+        return certificate;
     }
 }

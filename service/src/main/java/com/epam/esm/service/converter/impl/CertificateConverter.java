@@ -17,26 +17,24 @@ public class CertificateConverter implements Converter<Certificate, CertificateD
     private ModelMapper dtoRouter;
 
     @Override
-    public Certificate dtoObject(CertificateDto dto) {
-        Certificate certificate = new Certificate();
-        dtoRouter.map(dto, certificate);
-        return certificate;
+    public Certificate convertDtoToObject(CertificateDto dto) {
+        return dtoRouter.map(dto, Certificate.class);
     }
 
     @Override
-    public CertificateDto objectDto(Certificate entity) {
+    public CertificateDto convertObjectToDto(Certificate entity) {
         CertificateDto certificateDto = new CertificateDto();
         dtoRouter.map(entity, certificateDto);
         return certificateDto;
     }
 
     @Override
-    public List<Certificate> dtoObjectList(List<CertificateDto> dtoList) {
-        return dtoList.stream().map(this::dtoObject).collect(Collectors.toList());
+    public List<Certificate> convertDtoToObjectList(List<CertificateDto> dtoList) {
+        return dtoList.stream().map(this::convertDtoToObject).collect(Collectors.toList());
     }
 
     @Override
-    public List<CertificateDto> objectDtoList(List<Certificate> objectList) {
-        return objectList.stream().map(this::objectDto).collect(Collectors.toList());
+    public List<CertificateDto> convertObjectListToDto(List<Certificate> objectList) {
+        return objectList.stream().map(this::convertObjectToDto).collect(Collectors.toList());
     }
 }

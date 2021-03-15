@@ -14,11 +14,11 @@ import java.util.List;
 public interface CertificateDao extends CrudDao<Certificate> {
     /**
      * Finds certificate by tag
-     * @param tag
+     * @param tagIds
      * @return List of certificates with the same tag
      * @throws DaoException
      */
-        List<Certificate> getCertificateByTag(Tag tag) throws DaoException;
+        List<Certificate> getCertificateByTag(List<Long> tagIds) throws DaoException;
 
 }
 

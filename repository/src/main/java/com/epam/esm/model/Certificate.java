@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import javax.persistence.*;
 import javax.persistence.Entity;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.Set;
 
@@ -20,7 +21,7 @@ public class Certificate extends com.epam.esm.model.Entity implements Serializab
    private String description;
 
    @Column(name = "price")
-   private Double price;
+   private BigDecimal price;
 
    @Column(name = "duration")
    private Integer duration;
@@ -66,11 +67,11 @@ public class Certificate extends com.epam.esm.model.Entity implements Serializab
       this.description = description;
    }
 
-   public Double getPrice() {
+   public BigDecimal getPrice() {
       return price;
    }
 
-   public void setPrice(Double price) {
+   public void setPrice(BigDecimal price) {
       this.price = price;
    }
 
@@ -102,6 +103,7 @@ public class Certificate extends com.epam.esm.model.Entity implements Serializab
    public boolean equals(Object o) {
       if (this == o) return true;
       if (!(o instanceof Certificate)) return false;
+      if (!super.equals(o)) return false;
 
       Certificate that = (Certificate) o;
 
@@ -117,7 +119,8 @@ public class Certificate extends com.epam.esm.model.Entity implements Serializab
 
    @Override
    public int hashCode() {
-      int result = name != null ? name.hashCode() : 0;
+      int result = super.hashCode();
+      result = 31 * result + (name != null ? name.hashCode() : 0);
       result = 31 * result + (description != null ? description.hashCode() : 0);
       result = 31 * result + (price != null ? price.hashCode() : 0);
       result = 31 * result + (duration != null ? duration.hashCode() : 0);
