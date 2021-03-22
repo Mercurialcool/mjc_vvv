@@ -17,7 +17,7 @@ import javax.sql.DataSource;
 @WebAppConfiguration
 @Configuration
 @ComponentScan(basePackages = { "com.epam.esm" }, excludeFilters = {
-        @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = WebConfig.class)})
+        @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE)})
 public class TestConfig {
 
     @Bean
