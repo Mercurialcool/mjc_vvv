@@ -52,12 +52,6 @@ public class UserDaoImpl implements UserDao {
     public User getById(Long id) throws DaoException {
         Optional<User> optional = customRepository.findById(id);
         return optional.orElse(null);
-        //        try {
-//            return jdbcTemplate.queryForObject(GET_USER_BY_ID, new Object[]{id},
-//                    new BeanPropertyRowMapper<>(User.class));
-//        } catch (EmptyResultDataAccessException e) {
-//            return null;
-//        }
     }
 
     @Override

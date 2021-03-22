@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonRootName;
 import org.springframework.validation.annotation.Validated;
 
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Null;
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.Set;
@@ -15,15 +16,18 @@ import java.util.Set;
 @JsonRootName(value = "order")
 public class OrderDto extends EntityDto<Long, OrderDto> implements Serializable {
 
+    @Null
     private Instant dateOfIssue;
+
     private float quantity;
 
-    @NotNull
+    @NotNull(message = "Expected to receive user's id")
     private UserDto user;
 
     @NotNull
     private Set<CertificateDto> certificates;
 
+    @NotNull(message = "Order conditions cannot be empty")
     private Set<OrderCondition> orderConditions;
 
     public Instant getDateOfIssue() {

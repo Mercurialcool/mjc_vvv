@@ -2,7 +2,9 @@ package com.epam.esm.dao;
 
 import com.epam.esm.dao.exception.DaoException;
 import com.epam.esm.model.Certificate;
+import com.epam.esm.model.Entity;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -10,7 +12,7 @@ import java.util.List;
  * @param <T> Generic parameter for certificate and tag
  */
 
-public interface CrudDao<T> {
+public interface CrudDao<T extends Entity<ID>, ID extends Serializable> {
 
     /**
      * Shows all Certificates/Tags

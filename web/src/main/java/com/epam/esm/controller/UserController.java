@@ -9,11 +9,13 @@ import com.epam.esm.service.dto.UserDto;
 import com.epam.esm.util.impl.OrderHateoasBuilder;
 import com.epam.esm.util.impl.UserHateoasBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
 
+@Validated
 @RestController
 @RequestMapping("/users")
 public class UserController {
@@ -34,7 +36,7 @@ public class UserController {
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    public List<UserDto> getAll(SearchQuery searchQuery) {
+    public List<UserDto> getAll(@Valid SearchQuery searchQuery) {
         List<UserDto> users = userService.getAll(searchQuery);
         userHateoasBuilder.buildToEntitiesCollection(users);
         return users;
@@ -48,13 +50,13 @@ public class UserController {
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/{id}/orders")
-    public OrderDto createOrder(@RequestBody @Valid OrderDto orderDto, @PathVariable Long id) {
+    public OrderDto createOrder(@RequestBody OrderDto orderDto, @PathVariable Long id) {
         orderDto.getUser().setId(id);
         return orderService.create(orderDto);
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/{id}/orders")
-    public List<OrderDto> findOrders(@PathVariable Long id, SearchQuery searchQuery) {
+    public List<OrderDto> findOrders(@Valid @PathVariable Long id, SearchQuery searchQuery) {
         List<OrderDto> orders = orderService.findOrdersByUserId(id, searchQuery);
         orderHateoasBuilder.buildToEntitiesCollection(orders);
         return orders;

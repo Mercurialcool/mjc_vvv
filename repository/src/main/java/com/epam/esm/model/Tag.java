@@ -1,13 +1,20 @@
 package com.epam.esm.model;
 
+import lombok.*;
+
 import javax.persistence.*;
 import javax.persistence.Entity;
 import java.io.Serializable;
 
 @Entity
 @Table(name = "tag")
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
 @Inheritance(strategy = InheritanceType.JOINED)
-public class Tag extends com.epam.esm.model.Entity implements Serializable {
+public class Tag extends com.epam.esm.model.Entity<Long> implements Serializable {
 
     @Column(name = "name")
     private String name;
@@ -18,9 +25,6 @@ public class Tag extends com.epam.esm.model.Entity implements Serializable {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public Tag() {
     }
 
     @Override

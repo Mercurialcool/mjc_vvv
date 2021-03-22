@@ -5,9 +5,11 @@ import com.epam.esm.service.exception.certificate.CertificateAlreadyExistsExcept
 import com.epam.esm.service.exception.certificate.CertificateNotFoundException;
 import com.epam.esm.service.exception.certificate.UnableToDeleteCertificateException;
 import com.epam.esm.service.exception.certificate.UnableToUpdateCertificateException;
+import com.epam.esm.service.exception.order.OrderNotFoundException;
 import com.epam.esm.service.exception.tag.TagAlreadyExistsException;
 import com.epam.esm.service.exception.tag.TagNotFoundException;
 import com.epam.esm.service.exception.tag.UnableToDeleteTagException;
+import com.epam.esm.service.exception.user.UserNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -80,5 +82,17 @@ public class ControllerExceptionHandler {
     @ResponseStatus(HttpStatus.CONFLICT)
     public ErrorDto handlerUnableToDeleteTagException(UnableToDeleteTagException e) {
         return new ErrorDto(e.getMessage(), UNABLE_TO_DELETE_TAG.getCode());
+    }
+
+    @ExceptionHandler(value = UserNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorDto handlerUserNotFoundException(UserNotFoundException e) {
+        return new ErrorDto(e.getMessage(), USER_NOT_FOUND.getCode());
+    }
+
+    @ExceptionHandler(value = OrderNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorDto handlerOrderNotFoundException(OrderNotFoundException e) {
+        return new ErrorDto(e.getMessage(), ORDER_NOT_FOUND.getCode());
     }
 }

@@ -75,19 +75,15 @@ public class CertificateServiceImpl implements CertificateService {
 
     @Transactional
     @Override
-    public void delete(CertificateDto certificateDto, Long id) throws ServiceException {
+    public void delete(Long id) throws ServiceException {
+        Certificate certificate = certificateDao.getById(id);
             if(certificateDao.getById(id) == null) {
                 throw new CertificateNotFoundException("Certificate not found");
             }
 
-            final Certificate quantity = certificateDao.getById(id);
-            if(quantity == null) {
-                throw new UnableToDeleteCertificateException("Unable to delete certificate");
-            }
-            certificateDao.getById(id);
-            certificateDto.setId(id);
-            Certificate certificate = certificateConverter.convertDtoToObject(certificateDto);
-            certificateConverter.convertObjectToDto(certificateDao.delete(certificate));
+            //todo make unable to delete case
+
+           certificateDao.delete(certificate);
     }
 
     @Override
@@ -106,6 +102,7 @@ public class CertificateServiceImpl implements CertificateService {
                 throw new CertificateNotFoundException("Certificate was not found");
             certificateDto.setId(id);
             Certificate certificate = certificateConverter.convertDtoToObject(certificateDto);
+            //certificateDao.edit(certificate);
             return certificateConverter.convertObjectToDto(certificateDao.edit(certificate));
     }
 

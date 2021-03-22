@@ -14,6 +14,10 @@ public enum ErrorCodes {
     UNABLE_TO_DELETE_TAG("40903"),
     INVALID_TAG("40904"),
 
+    USER_NOT_FOUND("40403"),
+
+    ORDER_NOT_FOUND("40404"),
+
     INTERNAL_SERVER_ERROR("0000");
 
     private final String errorCode;

@@ -64,19 +64,12 @@ public class TagServiceImpl implements TagService {
 
     @Transactional
     @Override
-    public void delete(TagDto tagDto, Long id) throws ServiceException, DaoException {
+    public void delete(Long id) throws ServiceException, DaoException {
+        Tag tag = tagDao.getById(id);
             if(tagDao.getById(id) == null) {
                 throw new TagNotFoundException("Tag not found");
             }
-
-            final Tag quantity = tagDao.getById(id);
-            if(quantity == null) {
-                throw new UnableToDeleteTagException("Unable to delete tag");
-            }
-            tagDao.getById(id);
-            tagDto.setId(id);
-            Tag tag = tagConverter.convertDtoToObject(tagDto);
-            tagDao.delete(tag);
+           tagDao.delete(tag);
     }
 
     @Override

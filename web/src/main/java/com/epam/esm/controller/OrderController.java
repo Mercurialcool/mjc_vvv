@@ -6,10 +6,13 @@ import com.epam.esm.service.OrderService;
 import com.epam.esm.service.dto.OrderDto;
 import com.epam.esm.util.impl.OrderHateoasBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
+@Validated
 @RestController
 @RequestMapping("/orders")
 public class OrderController {
@@ -25,7 +28,7 @@ public class OrderController {
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    public List<OrderDto> getAll(SearchQuery searchQuery) {
+    public List<OrderDto> getAll(@Valid SearchQuery searchQuery) {
         List<OrderDto> orders = orderService.findAll(searchQuery);
         orderHateoasBuilder.buildToEntitiesCollection(orders);
         return orders;

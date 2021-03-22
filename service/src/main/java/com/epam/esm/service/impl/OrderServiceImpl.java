@@ -1,20 +1,27 @@
 package com.epam.esm.service.impl;
 
 import com.epam.esm.dao.*;
+import com.epam.esm.model.Certificate;
 import com.epam.esm.model.Order;
+import com.epam.esm.model.OrderCondition;
 import com.epam.esm.model.User;
 import com.epam.esm.service.OrderService;
 import com.epam.esm.service.converter.Converter;
 import com.epam.esm.service.dto.OrderDto;
+import com.epam.esm.service.exception.certificate.CertificateNotFoundException;
 import com.epam.esm.service.exception.order.OrderAlreadyExistsException;
 import com.epam.esm.service.exception.order.OrderNotFoundException;
 import com.epam.esm.service.utils.SearchQueryUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.ResourceAccessException;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -43,6 +50,8 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public OrderDto findOrderById(Long id) {
         Order order = orderDao.getById(id);
+        if (order == null)
+            throw new OrderNotFoundException("Order not found");
         return orderConverter.convertObjectToDto(orderDao.getById(id));
     }
 
@@ -54,8 +63,14 @@ public class OrderServiceImpl implements OrderService {
         if (user == null)
             throw new OrderNotFoundException("Order not found");
         Order order = new Order(Instant.now(), 1, user);
-        return orderConverter.convertObjectToDto(customOrderRepository.save(order));
+      //  if (certificateDao.getByName() == null)
+          //  throw new CertificateNotFoundException("Certificate not found");
+        Order savedOrder =  customOrderRepository.save(order);
+        savedOrder.getId();
+        orderDto.getCertificates().stream().filter(x -> certificateDao.getByName(x.getName()) == null).collect(Collectors.toList());
+        return null;
     }
+
 
 //    private Set<OrderCondition> findOrderConditions(OrderDto orderDto) {
 //        return orderDto.getOrderConditions().stream()
@@ -67,7 +82,7 @@ public class OrderServiceImpl implements OrderService {
 //                    }
 //                    return certificate;
 //                })
-//                .map(certificate -> new OrderCondition(certificate.getPrice(), orderDto, certificate))
+//                .map(certificate -> new OrderCondition(certificate.getPrice(), orderConverter.convertDtoToObject(orderDto), certificate))
 //                .collect(Collectors.toSet());
 //    }
 

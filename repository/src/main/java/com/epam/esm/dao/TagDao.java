@@ -11,7 +11,7 @@ import java.util.Set;
  * @param
  */
 
-public interface TagDao extends CrudDao<Tag>{
+public interface TagDao extends CrudDao<Tag, Long>{
     public Set<Tag> getTagsByIds(List<Long> ids) throws DaoException;
     public List<Tag> getMostFrequentTag() throws DaoException;
 }

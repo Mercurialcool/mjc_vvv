@@ -28,7 +28,7 @@ public class OrderDaoImpl implements OrderDao, RowMapper<Order> {
 
     public static final String GET_ORDER_BY_ID = "SELECT * FROM orders WHERE id = ?";
     public static final String ADD_NEW_ORDER = "INSERT INTO orders (date_of_issue,quantity) values(:date_of_issue,:quantity)";
-    public static final String GET_BY_USER = "SELECT * FROM orders WHERE id = ?";//todo fix
+    public static final String GET_BY_USER = "SELECT * FROM orders WHERE id = ?";
 
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
     private JdbcTemplate jdbcTemplate;
@@ -76,7 +76,7 @@ public class OrderDaoImpl implements OrderDao, RowMapper<Order> {
         order.setId(resultSet.getLong(PROVIDER_ID));
         order.setDateOfIssue(resultSet.getTimestamp(PROVIDER_CREATE_DATE) == null ? null : resultSet.getTimestamp(PROVIDER_CREATE_DATE).toInstant());
         order.setQuantity(resultSet.getFloat(PROVIDER_QUANTITY));
-        order.setUser(resultSet.getObject(PROVIDER_USER_ID, User.class));//todo ask
+        order.setUser(resultSet.getObject(PROVIDER_USER_ID, User.class));
         return order;
     }
 }

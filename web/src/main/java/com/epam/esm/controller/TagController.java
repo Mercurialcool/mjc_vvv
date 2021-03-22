@@ -12,8 +12,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
+@Validated
 @RestController
 @RequestMapping("/tags")
 public class TagController {
@@ -33,7 +35,7 @@ public class TagController {
      */
 
     @RequestMapping(method = RequestMethod.GET)
-    public List<TagDto> getByParameters(SearchQuery searchQuery) {
+    public List<TagDto> getByParameters(@Valid SearchQuery searchQuery) {
         List<TagDto> list = tagService.getByParameters(searchQuery);
         tagHateoasBuilder.buildToEntitiesCollection(list);
         return list;
@@ -47,7 +49,7 @@ public class TagController {
      */
 
     @RequestMapping(method = RequestMethod.POST)
-    public TagDto add(@RequestBody @Validated TagDto tagDto) {
+    public TagDto add(@Valid @RequestBody @Validated TagDto tagDto) {
         TagDto tag = tagService.add(tagDto);
         tagHateoasBuilder.buildSelfReference(tag);
         return tag;
@@ -67,15 +69,14 @@ public class TagController {
 
     /**
      * Deletes a tag
-     * @param tagDto tag object
      * @param id an to perform an operation by
      * @throws DaoException
      */
 
     @RequestMapping(method = RequestMethod.DELETE, value = "/{id}")
-    public void delete(@RequestBody TagDto tagDto, @PathVariable Long id) {
+    public void delete(@PathVariable Long id) {
         try {
-            tagService.delete(tagDto, id);
+            tagService.delete(id);
         } catch (ServiceException e) {
             logger.error(e);
             throw e;

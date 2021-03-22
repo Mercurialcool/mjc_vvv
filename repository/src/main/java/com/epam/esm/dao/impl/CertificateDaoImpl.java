@@ -41,12 +41,17 @@ public class CertificateDaoImpl implements CertificateDao {
     private JdbcTemplate jdbcTemplate;
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
     private TagDao tagDao;
+    private CustomCertificateRepository customCertificateRepository;
 
     @Autowired
-    public CertificateDaoImpl(JdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate namedParameterJdbcTemplate, TagDao tagDao) {
+    public CertificateDaoImpl(JdbcTemplate jdbcTemplate,
+                              NamedParameterJdbcTemplate namedParameterJdbcTemplate,
+                              TagDao tagDao,
+                              CustomCertificateRepository customCertificateRepository) {
         this.jdbcTemplate = jdbcTemplate;
         this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
         this.tagDao = tagDao;
+        this.customCertificateRepository = customCertificateRepository;
     }
 
     private List<Long> getCertificateIdsByTagId(List<Long> tagIds){
@@ -193,20 +198,22 @@ public class CertificateDaoImpl implements CertificateDao {
 
     @Override
     public Certificate getById(Long id) throws DaoException {
-        try {
-            Certificate certificate =  jdbcTemplate.queryForObject(GET_CERTIFICATE_BY_ID, new Object[]{id},
-                    new BeanPropertyRowMapper<>(Certificate.class));
-                for (Tag t : certificate.getTags()) {
-                    Tag foundTag = tagDao.getByName(t.getName());
-                    if (foundTag == null) {
-                        foundTag = tagDao.add(t);
-                    }
-                    t.setId(foundTag.getId());
-                }
-            return certificate;
-        } catch (EmptyResultDataAccessException e) {
-            return null;
-        }
+        Optional<Certificate> optional = customCertificateRepository.findById(id);
+        return optional.orElse(null);
+//        try {
+//            Certificate certificate =  jdbcTemplate.queryForObject(GET_CERTIFICATE_BY_ID, new Object[]{id},
+//                    new BeanPropertyRowMapper<>(Certificate.class));
+//                for (Tag t : certificate.getTags()) {
+//                    Tag foundTag = tagDao.getByName(t.getName());
+//                    if (foundTag == null) {
+//                        foundTag = tagDao.add(t);
+//                    }
+//                    t.setId(foundTag.getId());
+//                }
+//            return certificate;
+//        } catch (EmptyResultDataAccessException e) {
+//            return null;
+//        }
     }
 
     @Override

@@ -1,5 +1,7 @@
 package com.epam.esm.model;
 
+import lombok.*;
+
 import javax.persistence.*;
 import javax.persistence.Entity;
 import java.io.Serializable;
@@ -8,8 +10,13 @@ import java.util.Set;
 
 @Entity
 @Table(name = "orders")
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@EqualsAndHashCode(callSuper = true, exclude = {"user", "orderConditions"})
+@ToString(callSuper = true, exclude = {"user", "orderConditions"})
 @Inheritance(strategy = InheritanceType.JOINED)
-public class Order extends com.epam.esm.model.Entity implements Serializable {
+public class Order extends com.epam.esm.model.Entity<Long> implements Serializable {
     private static final long serialVersionUID = -519531229783607916L;
 
     @Column(name = "date_of_issue", columnDefinition = "TIMESTAMP")
@@ -24,13 +31,13 @@ public class Order extends com.epam.esm.model.Entity implements Serializable {
     @OneToMany(mappedBy = "order")
     private Set<OrderCondition> orderConditions;
 
-    public Order() {
-    }
-
     public Order(Instant dateOfIssue, float quantity, User user) {
         this.dateOfIssue = dateOfIssue;
         this.quantity = quantity;
         this.user = user;
+    }
+
+    public Order(Instant dateOfIssue, User linkingUser, Object user) {
     }
 
     public Instant getDateOfIssue() {
@@ -65,39 +72,6 @@ public class Order extends com.epam.esm.model.Entity implements Serializable {
         this.orderConditions = orderConditions;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Order)) return false;
-        if (!super.equals(o)) return false;
 
-        Order order = (Order) o;
-
-        if (dateOfIssue != null ? !dateOfIssue.equals(order.dateOfIssue) : order.dateOfIssue != null) return false;
-        if (quantity != null ? !quantity.equals(order.quantity) : order.quantity != null) return false;
-        if (user != null ? !user.equals(order.user) : order.user != null) return false;
-        return orderConditions != null ? orderConditions.equals(order.orderConditions) : order.orderConditions == null;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = super.hashCode();
-        result = 31 * result + (dateOfIssue != null ? dateOfIssue.hashCode() : 0);
-        result = 31 * result + (quantity != null ? quantity.hashCode() : 0);
-        result = 31 * result + (user != null ? user.hashCode() : 0);
-        result = 31 * result + (orderConditions != null ? orderConditions.hashCode() : 0);
-        return result;
-    }
-
-    @Override
-    public String toString() {
-        final StringBuilder sb = new StringBuilder("Order{");
-        sb.append("dateOfIssue=").append(dateOfIssue);
-        sb.append(", quantity=").append(quantity);
-        sb.append(", user=").append(user);
-        sb.append(", orderConditions=").append(orderConditions);
-        sb.append('}');
-        return sb.toString();
-    }
 }
 

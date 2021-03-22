@@ -2,11 +2,16 @@ package com.epam.esm.service.dto;
 
 import com.fasterxml.jackson.annotation.JsonRootName;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
 import java.io.Serializable;
 
 @JsonRootName(value = "tag")
 public class TagDto extends EntityDto<Long, TagDto> implements Serializable {
 
+    @NotBlank(message = "Field 'name' cannot be empty")
+    @Pattern(regexp = "[\\-0-9A-Za-zА-Яа-яЁё ]{3,30}", message = "Wrong input! Name can contain only characters" +
+            "and has to be from 3 to 30 in length")
     private String name;
 
     public TagDto() {

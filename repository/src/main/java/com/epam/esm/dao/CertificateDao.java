@@ -11,7 +11,7 @@ import java.util.List;
  *
  */
 
-public interface CertificateDao extends CrudDao<Certificate> {
+public interface CertificateDao extends CrudDao<Certificate, Long> {
     /**
      * Finds certificate by tag
      * @param tagIds

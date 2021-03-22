@@ -8,14 +8,18 @@ import org.apache.logging.log4j.Logger;
 import com.epam.esm.service.CertificateService;
 import com.epam.esm.service.exception.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
+@Validated
 @RequestMapping("/certificates")
 public class GiftCertificateController {
 
@@ -37,7 +41,7 @@ public class GiftCertificateController {
      */
 
     @RequestMapping(method = RequestMethod.GET)
-    public List<CertificateDto> getByParameters(SearchQuery searchQuery) {
+    public List<CertificateDto> getByParameters(@Valid SearchQuery searchQuery) {
         List<CertificateDto> list = certificateService.getByParameters(searchQuery);
         certificateHateoasBuilder.buildToEntitiesCollection(list);
         return list;
@@ -50,7 +54,7 @@ public class GiftCertificateController {
      */
 
     @RequestMapping(method = RequestMethod.POST)
-    public CertificateDto create(@RequestBody @Validated CertificateDto certificateDto) {
+    public CertificateDto create(@RequestBody @Valid CertificateDto certificateDto) {
         CertificateDto certificate = certificateService.add(certificateDto);
         certificateHateoasBuilder.buildSelfReference(certificate);
         return certificate;
@@ -58,14 +62,13 @@ public class GiftCertificateController {
 
     /**
      * Deletes a Certificate
-     * @param certificateDto certificate object
      * @param id an identifier to perform an operation by
      */
 
     @RequestMapping(method = RequestMethod.DELETE, value = "/{id}")
-    public void removeCertificate(@RequestBody CertificateDto certificateDto, @PathVariable Long id) {
+    public void removeCertificate(@PathVariable Long id) {
         try {
-            certificateService.delete(certificateDto, id);
+            certificateService.delete(id);
         } catch (ServiceException e) {
             logger.error(e);
             throw e;

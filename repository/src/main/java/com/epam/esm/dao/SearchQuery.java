@@ -1,10 +1,12 @@
 package com.epam.esm.dao;
 
 import org.springframework.stereotype.Component;
+import org.springframework.validation.annotation.Validated;
 
 import java.util.List;
 
 @Component
+@Validated
 public class SearchQuery {
 
     private int page;

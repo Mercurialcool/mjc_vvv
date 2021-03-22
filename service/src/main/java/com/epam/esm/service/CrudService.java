@@ -37,7 +37,7 @@ public interface CrudService<T> {
      * @throws ServiceException
      * @throws DaoException
      */
-    void delete(T t, Long id) throws ServiceException, DaoException;
+    void delete(Long id) throws ServiceException, DaoException;
 
     /**
      * Searches Certificate/Tag by name at a service layer
